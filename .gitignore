@@ -16,10 +16,6 @@ ENV/
 checkpoints*/*.pth
 checkpoints*/*.tmp
 
-# Datasets (Large multi-gigabyte image directories)
-DFUdataset/
-WagnerDataset/
-
 # Temporary and log files
 *.log
 outputs/temp*
