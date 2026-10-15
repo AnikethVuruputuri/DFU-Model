@@ -1,0 +1,1156 @@
+{
+  "total_excluded": 148,
+  "exact_duplicates_count": 37,
+  "augmented_variants_count": 111,
+  "exact_duplicates": [
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\216.jpg",
+      "train_filename": "216.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "216",
+      "eval_split": "valid",
+      "eval_filename": "500.jpg",
+      "eval_path": "WagnerDataset/valid\\Grade 0\\500.jpg",
+      "hash": "14fc09715648e61855e165573be76778"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\223.jpg",
+      "train_filename": "223.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "223",
+      "eval_split": "valid",
+      "eval_filename": "513.jpg",
+      "eval_path": "WagnerDataset/valid\\Grade 0\\513.jpg",
+      "hash": "864ecb25cd57006169fccaf7004c831d"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\226.jpg",
+      "train_filename": "226.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "226",
+      "eval_split": "valid",
+      "eval_filename": "506.jpg",
+      "eval_path": "WagnerDataset/valid\\Grade 0\\506.jpg",
+      "hash": "5b21a4bccfe35d674c360b254cc797b6"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\227.jpg",
+      "train_filename": "227.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "227",
+      "eval_split": "valid",
+      "eval_filename": "515.jpg",
+      "eval_path": "WagnerDataset/valid\\Grade 0\\515.jpg",
+      "hash": "7a9ad2c6a408d1525d1f023713222c2c"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\230.jpg",
+      "train_filename": "230.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "230",
+      "eval_split": "valid",
+      "eval_filename": "507.jpg",
+      "eval_path": "WagnerDataset/valid\\Grade 0\\507.jpg",
+      "hash": "7aa635a9dc752bdfcae9539cee86db21"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\231.jpg",
+      "train_filename": "231.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "231",
+      "eval_split": "valid",
+      "eval_filename": "503.jpg",
+      "eval_path": "WagnerDataset/valid\\Grade 0\\503.jpg",
+      "hash": "bd664e3deac07d3f9802a5b1f2ebd249"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\233.jpg",
+      "train_filename": "233.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "233",
+      "eval_split": "valid",
+      "eval_filename": "520.jpg",
+      "eval_path": "WagnerDataset/valid\\Grade 0\\520.jpg",
+      "hash": "6148d4d0e62d818d69ee7119089035c4"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\235.jpg",
+      "train_filename": "235.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "235",
+      "eval_split": "valid",
+      "eval_filename": "519.jpg",
+      "eval_path": "WagnerDataset/valid\\Grade 0\\519.jpg",
+      "hash": "a5e30949c7833abe5ef0757066463bee"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\237.jpg",
+      "train_filename": "237.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "237",
+      "eval_split": "valid",
+      "eval_filename": "508.jpg",
+      "eval_path": "WagnerDataset/valid\\Grade 0\\508.jpg",
+      "hash": "d4dfaa21640944dfdbd91d263e4299f1"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\238.jpg",
+      "train_filename": "238.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "238",
+      "eval_split": "valid",
+      "eval_filename": "516.jpg",
+      "eval_path": "WagnerDataset/valid\\Grade 0\\516.jpg",
+      "hash": "15d0c4b220fe6ee4a85977141b24093c"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\239.jpg",
+      "train_filename": "239.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "239",
+      "eval_split": "test",
+      "eval_filename": "522.jpg",
+      "eval_path": "WagnerDataset/test\\Grade 0\\522.jpg",
+      "hash": "af47237aeb4ba2fc0938418bdf88938a"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\240.jpg",
+      "train_filename": "240.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "240",
+      "eval_split": "test",
+      "eval_filename": "525.jpg",
+      "eval_path": "WagnerDataset/test\\Grade 0\\525.jpg",
+      "hash": "012a9c1992ae85ae82ba6143eb61f402"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\241.jpg",
+      "train_filename": "241.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "241",
+      "eval_split": "test",
+      "eval_filename": "523.jpg",
+      "eval_path": "WagnerDataset/test\\Grade 0\\523.jpg",
+      "hash": "a1553ae5fcc3c61cd94201bf9de230fb"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\242.jpg",
+      "train_filename": "242.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "242",
+      "eval_split": "valid",
+      "eval_filename": "501.jpg",
+      "eval_path": "WagnerDataset/valid\\Grade 0\\501.jpg",
+      "hash": "bd098642813c1b77b11f2e4147848eb1"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\244.jpg",
+      "train_filename": "244.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "244",
+      "eval_split": "valid",
+      "eval_filename": "509.jpg",
+      "eval_path": "WagnerDataset/valid\\Grade 0\\509.jpg",
+      "hash": "fb43a45b6db0ae5a78bd430cc82e491c"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\245.jpg",
+      "train_filename": "245.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "245",
+      "eval_split": "valid",
+      "eval_filename": "505.jpg",
+      "eval_path": "WagnerDataset/valid\\Grade 0\\505.jpg",
+      "hash": "c139fa3e4bc17af7217959a3873ad65c"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\246.jpg",
+      "train_filename": "246.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "246",
+      "eval_split": "test",
+      "eval_filename": "524.jpg",
+      "eval_path": "WagnerDataset/test\\Grade 0\\524.jpg",
+      "hash": "e796f5cf7cbb8bcf86877fc5fe80e03e"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\247.jpg",
+      "train_filename": "247.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "247",
+      "eval_split": "valid",
+      "eval_filename": "502.jpg",
+      "eval_path": "WagnerDataset/valid\\Grade 0\\502.jpg",
+      "hash": "c92be4325c586f9749e153464a7924d0"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\249.jpg",
+      "train_filename": "249.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "249",
+      "eval_split": "test",
+      "eval_filename": "527.jpg",
+      "eval_path": "WagnerDataset/test\\Grade 0\\527.jpg",
+      "hash": "d96dbef0d5a4ac225ee52deb9117c65e"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\252.jpg",
+      "train_filename": "252.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "252",
+      "eval_split": "valid",
+      "eval_filename": "504.jpg",
+      "eval_path": "WagnerDataset/valid\\Grade 0\\504.jpg",
+      "hash": "d412b068d1fd9154f18a3f77f1cb9924"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\254.jpg",
+      "train_filename": "254.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "254",
+      "eval_split": "test",
+      "eval_filename": "531.jpg",
+      "eval_path": "WagnerDataset/test\\Grade 0\\531.jpg",
+      "hash": "8e80a04972ff2acf968ffd1e05654694"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\256.jpg",
+      "train_filename": "256.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "256",
+      "eval_split": "valid",
+      "eval_filename": "512.jpg",
+      "eval_path": "WagnerDataset/valid\\Grade 0\\512.jpg",
+      "hash": "61c9c53cb6cc1fc1c7b7ff5fdac29809"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\258.jpg",
+      "train_filename": "258.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "258",
+      "eval_split": "valid",
+      "eval_filename": "511.jpg",
+      "eval_path": "WagnerDataset/valid\\Grade 0\\511.jpg",
+      "hash": "7a2c4f1ddf10c23dcba23cad827eba66"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\259.jpg",
+      "train_filename": "259.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "259",
+      "eval_split": "valid",
+      "eval_filename": "510.jpg",
+      "eval_path": "WagnerDataset/valid\\Grade 0\\510.jpg",
+      "hash": "f7ef4593ba268a1af437ad12fcc00d57"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\260.jpg",
+      "train_filename": "260.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "260",
+      "eval_split": "valid",
+      "eval_filename": "514.jpg",
+      "eval_path": "WagnerDataset/valid\\Grade 0\\514.jpg",
+      "hash": "b9d385bab0dd2a3833ad9582cd3c68f7"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\263.jpg",
+      "train_filename": "263.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "263",
+      "eval_split": "test",
+      "eval_filename": "534.jpg",
+      "eval_path": "WagnerDataset/test\\Grade 0\\534.jpg",
+      "hash": "aca69e3ad78bbbd7d1696f1c17df89d4"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\264.jpg",
+      "train_filename": "264.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "264",
+      "eval_split": "test",
+      "eval_filename": "533.jpg",
+      "eval_path": "WagnerDataset/test\\Grade 0\\533.jpg",
+      "hash": "f77cabcd605e982fb5b79dc11b781969"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\268.jpg",
+      "train_filename": "268.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "268",
+      "eval_split": "test",
+      "eval_filename": "528.jpg",
+      "eval_path": "WagnerDataset/test\\Grade 0\\528.jpg",
+      "hash": "745ded43ebf45a033e165b81fee4157a"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\270.jpg",
+      "train_filename": "270.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "270",
+      "eval_split": "test",
+      "eval_filename": "530.jpg",
+      "eval_path": "WagnerDataset/test\\Grade 0\\530.jpg",
+      "hash": "b9d22bb47534248832d87671232b5275"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\272.jpg",
+      "train_filename": "272.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "272",
+      "eval_split": "valid",
+      "eval_filename": "517.jpg",
+      "eval_path": "WagnerDataset/valid\\Grade 0\\517.jpg",
+      "hash": "7b15469c029062142ce4986d7457bf34"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\273.jpg",
+      "train_filename": "273.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "273",
+      "eval_split": "test",
+      "eval_filename": "521.jpg",
+      "eval_path": "WagnerDataset/test\\Grade 0\\521.jpg",
+      "hash": "75ebbe44a678ead3647a241c020641ac"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\274.jpg",
+      "train_filename": "274.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "274",
+      "eval_split": "valid",
+      "eval_filename": "518.jpg",
+      "eval_path": "WagnerDataset/valid\\Grade 0\\518.jpg",
+      "hash": "0050c4e2d8d82d99589bce8abac7ea49"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\275.jpg",
+      "train_filename": "275.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "275",
+      "eval_split": "test",
+      "eval_filename": "529.jpg",
+      "eval_path": "WagnerDataset/test\\Grade 0\\529.jpg",
+      "hash": "af5e182a1e35c2148a12bc1bb4d2509b"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\276.jpg",
+      "train_filename": "276.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "276",
+      "eval_split": "test",
+      "eval_filename": "532.jpg",
+      "eval_path": "WagnerDataset/test\\Grade 0\\532.jpg",
+      "hash": "a48863d8f6ba2cde6a0ea2d363293f1b"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\277.jpg",
+      "train_filename": "277.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "277",
+      "eval_split": "test",
+      "eval_filename": "537.jpg",
+      "eval_path": "WagnerDataset/test\\Grade 0\\537.jpg",
+      "hash": "87a40ab1972c7f6177ac6bbb73fd584c"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\278.jpg",
+      "train_filename": "278.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "278",
+      "eval_split": "test",
+      "eval_filename": "535.jpg",
+      "eval_path": "WagnerDataset/test\\Grade 0\\535.jpg",
+      "hash": "a3c872471ebe10674bbc95c4b5b5e663"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\280.jpg",
+      "train_filename": "280.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "280",
+      "eval_split": "test",
+      "eval_filename": "536.jpg",
+      "eval_path": "WagnerDataset/test\\Grade 0\\536.jpg",
+      "hash": "c755f84674a6e2852a73a5b6dc1eac58"
+    }
+  ],
+  "augmented_variants": [
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\216_aug_1.jpg",
+      "train_filename": "216_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "216",
+      "hash": "0f5905c5e318a4bfa6586a02c2a8665e"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\216_aug_2.jpg",
+      "train_filename": "216_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "216",
+      "hash": "e3a21a54660c26d014a89367c142d2e8"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\216_aug_3.jpg",
+      "train_filename": "216_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "216",
+      "hash": "acec247cc992ca755bb3e4ab538a9009"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\223_aug_1.jpg",
+      "train_filename": "223_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "223",
+      "hash": "02fb32056c9331859208252864d331c1"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\223_aug_2.jpg",
+      "train_filename": "223_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "223",
+      "hash": "d19fa6b166976497d0e6cbc964ac024c"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\223_aug_3.jpg",
+      "train_filename": "223_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "223",
+      "hash": "0e94e887c91d7fa1eb5fa8250b4e4c9a"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\226_aug_1.jpg",
+      "train_filename": "226_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "226",
+      "hash": "02676fc6621e0b182d3379341cc00338"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\226_aug_2.jpg",
+      "train_filename": "226_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "226",
+      "hash": "cec4a6f9e17052debfb17f71e589e0b2"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\226_aug_3.jpg",
+      "train_filename": "226_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "226",
+      "hash": "1b68d785eea3740fb48ec2eb4b6ba87c"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\227_aug_1.jpg",
+      "train_filename": "227_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "227",
+      "hash": "11cbf757cd0d4da496f63a70e0384869"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\227_aug_2.jpg",
+      "train_filename": "227_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "227",
+      "hash": "170bdd4acdfc526cc239d87f8428fdfc"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\227_aug_3.jpg",
+      "train_filename": "227_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "227",
+      "hash": "2fbf21d1a6f293906ccaebe114737b6c"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\230_aug_1.jpg",
+      "train_filename": "230_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "230",
+      "hash": "df85dc9b3bb41c1fe0b6900ac950c7ec"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\230_aug_2.jpg",
+      "train_filename": "230_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "230",
+      "hash": "ceb4ba451f04894f80dcd3a9d8c77690"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\230_aug_3.jpg",
+      "train_filename": "230_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "230",
+      "hash": "8a3286b7ea2a4ce62de69b9523bee161"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\231_aug_1.jpg",
+      "train_filename": "231_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "231",
+      "hash": "7586933fea644facac6ddab67c8f58a9"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\231_aug_2.jpg",
+      "train_filename": "231_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "231",
+      "hash": "8a3b8d8946f2ecc3ae215ea145e94792"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\231_aug_3.jpg",
+      "train_filename": "231_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "231",
+      "hash": "2360b5045d90e48ed785ef70f9c49ea5"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\233_aug_1.jpg",
+      "train_filename": "233_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "233",
+      "hash": "6140f17a3589365c80503c91f653b320"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\233_aug_2.jpg",
+      "train_filename": "233_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "233",
+      "hash": "d1b5f6f188983baa35c38b6b482d1b61"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\233_aug_3.jpg",
+      "train_filename": "233_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "233",
+      "hash": "4fe9e624a98cb26486a918d9aca31204"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\235_aug_1.jpg",
+      "train_filename": "235_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "235",
+      "hash": "691ad3c492d86bf69586dbc8c49c6495"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\235_aug_2.jpg",
+      "train_filename": "235_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "235",
+      "hash": "01cffe54ec7b3fb68926a3d83c898f6a"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\235_aug_3.jpg",
+      "train_filename": "235_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "235",
+      "hash": "ae2819b5fbc47fd1fee8c27b09c88c29"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\237_aug_1.jpg",
+      "train_filename": "237_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "237",
+      "hash": "0fb27ecb03faef7e18553eeee29ff416"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\237_aug_2.jpg",
+      "train_filename": "237_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "237",
+      "hash": "f559743e6f609cac160a785f0e031be2"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\237_aug_3.jpg",
+      "train_filename": "237_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "237",
+      "hash": "6e7da6d549c875a8e3b730da3575a6c8"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\238_aug_1.jpg",
+      "train_filename": "238_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "238",
+      "hash": "1468dfff124fd74651bdd517ed86b421"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\238_aug_2.jpg",
+      "train_filename": "238_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "238",
+      "hash": "9507176fc90eab963760b3b86082a904"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\238_aug_3.jpg",
+      "train_filename": "238_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "238",
+      "hash": "29c21caf3834c92ad4eacf52215c267f"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\239_aug_1.jpg",
+      "train_filename": "239_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "239",
+      "hash": "4a1e32db103d82c609c922f2129cc60f"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\239_aug_2.jpg",
+      "train_filename": "239_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "239",
+      "hash": "98d6db95f7a8e90be3aa2fd7d209f38f"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\239_aug_3.jpg",
+      "train_filename": "239_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "239",
+      "hash": "b39f72e6fbde794277ff09085935522c"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\240_aug_1.jpg",
+      "train_filename": "240_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "240",
+      "hash": "fb6645fa98eab0ebe8a0f7a4aead1c50"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\240_aug_2.jpg",
+      "train_filename": "240_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "240",
+      "hash": "d42c36ef1ac1a1e7ff1b6fe3c444a330"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\240_aug_3.jpg",
+      "train_filename": "240_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "240",
+      "hash": "80a16834d377b9e2c04cdd8e157cc3e6"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\241_aug_1.jpg",
+      "train_filename": "241_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "241",
+      "hash": "22b8e25b039074fc0efdc98829806aa6"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\241_aug_2.jpg",
+      "train_filename": "241_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "241",
+      "hash": "c2ac858fb964eb61384a9a72af55975b"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\241_aug_3.jpg",
+      "train_filename": "241_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "241",
+      "hash": "45b829bf3b2018939fb159f5f9c5a005"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\242_aug_1.jpg",
+      "train_filename": "242_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "242",
+      "hash": "24bc4c4138f813c0d44e0a773d66b1a6"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\242_aug_2.jpg",
+      "train_filename": "242_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "242",
+      "hash": "eb8d26cfe7d50d58a03795a95bbde410"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\242_aug_3.jpg",
+      "train_filename": "242_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "242",
+      "hash": "2ec81690181a686164ef7098d087bfe5"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\244_aug_1.jpg",
+      "train_filename": "244_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "244",
+      "hash": "1dd6120e7b9868cbb4094f0d4cd44de1"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\244_aug_2.jpg",
+      "train_filename": "244_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "244",
+      "hash": "52538fc69a359e4c280df518170d367f"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\244_aug_3.jpg",
+      "train_filename": "244_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "244",
+      "hash": "09bb5a7c6c487fbc7d562bdde60cd04f"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\245_aug_1.jpg",
+      "train_filename": "245_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "245",
+      "hash": "3e9c83cd6421f20a49904504b87193f3"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\245_aug_2.jpg",
+      "train_filename": "245_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "245",
+      "hash": "feeb98922dfb45cea095ef8db1309316"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\245_aug_3.jpg",
+      "train_filename": "245_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "245",
+      "hash": "31f7f72d5c0de24e991b1397d4bb39bd"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\246_aug_1.jpg",
+      "train_filename": "246_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "246",
+      "hash": "3dcc031493e5eef3fd68dbf41069be33"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\246_aug_2.jpg",
+      "train_filename": "246_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "246",
+      "hash": "f995ec4a3faecc125030d311f0c874ea"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\246_aug_3.jpg",
+      "train_filename": "246_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "246",
+      "hash": "2f6b5c5c3fa29afb9529e35336699447"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\247_aug_1.jpg",
+      "train_filename": "247_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "247",
+      "hash": "e1e6663f280357178ba344a9932a8dfe"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\247_aug_2.jpg",
+      "train_filename": "247_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "247",
+      "hash": "daa19fe3942ca254cbab4458f09717d8"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\247_aug_3.jpg",
+      "train_filename": "247_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "247",
+      "hash": "fcfe78fcc547028b046f040e0e70bae2"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\249_aug_1.jpg",
+      "train_filename": "249_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "249",
+      "hash": "83fd9b1c526e418915729cb6d903f2cf"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\249_aug_2.jpg",
+      "train_filename": "249_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "249",
+      "hash": "ea831bf5934e493ed6c550cd762e1e2c"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\249_aug_3.jpg",
+      "train_filename": "249_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "249",
+      "hash": "55d0a07fcdfe43a7126e23a018605064"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\252_aug_1.jpg",
+      "train_filename": "252_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "252",
+      "hash": "23bb82882e1d47efedb6748967adff74"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\252_aug_2.jpg",
+      "train_filename": "252_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "252",
+      "hash": "8d9357b3fd9032ccc179cd13aa49b83d"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\252_aug_3.jpg",
+      "train_filename": "252_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "252",
+      "hash": "a0b813af6d74ff870dcf32d845f3d9bb"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\254_aug_1.jpg",
+      "train_filename": "254_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "254",
+      "hash": "1bdfc543fce86ef1bbe34344783e7ecb"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\254_aug_2.jpg",
+      "train_filename": "254_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "254",
+      "hash": "6ed1c62e55370d66872ea9d5197b377b"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\254_aug_3.jpg",
+      "train_filename": "254_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "254",
+      "hash": "f6640b5c2e8d98014496e4818d6294f0"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\256_aug_1.jpg",
+      "train_filename": "256_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "256",
+      "hash": "e447840ed88d49cf7a7c35ae94fd75e5"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\256_aug_2.jpg",
+      "train_filename": "256_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "256",
+      "hash": "9584dba6686c0120694660649794e4e9"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\256_aug_3.jpg",
+      "train_filename": "256_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "256",
+      "hash": "7115a1a9d8c447f5e9818303b0e5cfb9"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\258_aug_1.jpg",
+      "train_filename": "258_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "258",
+      "hash": "95120e79ccc80a90504a72b37ebc77f2"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\258_aug_2.jpg",
+      "train_filename": "258_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "258",
+      "hash": "5abb6bc0dff84036648c354762d186d1"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\258_aug_3.jpg",
+      "train_filename": "258_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "258",
+      "hash": "32f378460b8cf61cbdf20dcd4a788e6c"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\259_aug_1.jpg",
+      "train_filename": "259_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "259",
+      "hash": "40ffc8a24563842ed108391051d2c50c"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\259_aug_2.jpg",
+      "train_filename": "259_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "259",
+      "hash": "59fc6588e157c43d269070eb19b45469"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\259_aug_3.jpg",
+      "train_filename": "259_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "259",
+      "hash": "d4ebdc115f80c3e30fb0bd19e4b19b08"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\260_aug_1.jpg",
+      "train_filename": "260_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "260",
+      "hash": "9d055653e881fb1af32ffb6f7dfa5131"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\260_aug_2.jpg",
+      "train_filename": "260_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "260",
+      "hash": "ac6ec107555c093cbec67050c34d3dd2"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\260_aug_3.jpg",
+      "train_filename": "260_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "260",
+      "hash": "e99bfa146521c1cc35fd81db8e59233c"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\263_aug_1.jpg",
+      "train_filename": "263_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "263",
+      "hash": "28bb08f9f38ddf2eb83912208cb9c8e5"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\263_aug_2.jpg",
+      "train_filename": "263_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "263",
+      "hash": "38047f872cc26d6d678e5cb3854b2dcf"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\263_aug_3.jpg",
+      "train_filename": "263_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "263",
+      "hash": "0dbe56be7217be5465350d716a49c6de"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\264_aug_1.jpg",
+      "train_filename": "264_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "264",
+      "hash": "ee75ab68bfad6ddf45fb2367ea295e46"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\264_aug_2.jpg",
+      "train_filename": "264_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "264",
+      "hash": "a437ed4a26ea0b26fff0d859f8082dd9"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\264_aug_3.jpg",
+      "train_filename": "264_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "264",
+      "hash": "7b0ed58f8c9fbb79278f8228aaa5d8d1"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\268_aug_1.jpg",
+      "train_filename": "268_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "268",
+      "hash": "bc30ad3800aa5d26a29b35ba01db1ce0"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\268_aug_2.jpg",
+      "train_filename": "268_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "268",
+      "hash": "e30e2af5b31f24e8f59002ec5b0c0927"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\268_aug_3.jpg",
+      "train_filename": "268_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "268",
+      "hash": "10e2ccc4847873ed602ce81ce6066fac"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\270_aug_1.jpg",
+      "train_filename": "270_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "270",
+      "hash": "5f672511ae3baad867098c6d6e9eeefd"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\270_aug_2.jpg",
+      "train_filename": "270_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "270",
+      "hash": "6a97132c8ded558e71ddacbf6ee16494"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\270_aug_3.jpg",
+      "train_filename": "270_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "270",
+      "hash": "af5d1546814b2f4abae7205f2f5eb5e6"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\272_aug_1.jpg",
+      "train_filename": "272_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "272",
+      "hash": "42b2d81da050f722331b720176058e22"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\272_aug_2.jpg",
+      "train_filename": "272_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "272",
+      "hash": "cde371e1a847f2f1e902dc2628aa99da"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\272_aug_3.jpg",
+      "train_filename": "272_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "272",
+      "hash": "77274ee4d9646ce023d9a658abdbc2de"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\273_aug_1.jpg",
+      "train_filename": "273_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "273",
+      "hash": "8835f4557e17c2d09ba9db46af4450c4"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\273_aug_2.jpg",
+      "train_filename": "273_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "273",
+      "hash": "4424b04767cb6f3ce8defee315f5ec8f"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\273_aug_3.jpg",
+      "train_filename": "273_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "273",
+      "hash": "c65ccdca6640491d7804933612f160a4"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\274_aug_1.jpg",
+      "train_filename": "274_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "274",
+      "hash": "83d0f58d17f3c8a8470a11dc3a2ac722"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\274_aug_2.jpg",
+      "train_filename": "274_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "274",
+      "hash": "0cc47106693a9ae29dd9151e895d4102"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\274_aug_3.jpg",
+      "train_filename": "274_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "274",
+      "hash": "2e9ee41df969e786d7638916dceeb8e5"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\275_aug_1.jpg",
+      "train_filename": "275_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "275",
+      "hash": "5cd2ad6b586f76e047e4f5f79957ddc7"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\275_aug_2.jpg",
+      "train_filename": "275_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "275",
+      "hash": "e19b39eda5dac168e67c210f19db9061"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\275_aug_3.jpg",
+      "train_filename": "275_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "275",
+      "hash": "9c1adce086a2bb75ecf4f81b915a0c0d"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\276_aug_1.jpg",
+      "train_filename": "276_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "276",
+      "hash": "5b8856b4e59c3ce43cd3c6fca8fe1dda"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\276_aug_2.jpg",
+      "train_filename": "276_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "276",
+      "hash": "37473c752da4498df7db8b7f8b7afd28"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\276_aug_3.jpg",
+      "train_filename": "276_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "276",
+      "hash": "48931aff76de9f004fb53801abe0739a"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\277_aug_1.jpg",
+      "train_filename": "277_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "277",
+      "hash": "e9e4f0dec243b60b938876675afb82ed"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\277_aug_2.jpg",
+      "train_filename": "277_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "277",
+      "hash": "a43107bd7947ce74bd4b1a8eca7cfc90"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\277_aug_3.jpg",
+      "train_filename": "277_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "277",
+      "hash": "ed58ded98be3b17dd0cd159ebea053f3"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\278_aug_1.jpg",
+      "train_filename": "278_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "278",
+      "hash": "6f071ca2def762e485f7fbb914b548c2"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\278_aug_2.jpg",
+      "train_filename": "278_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "278",
+      "hash": "528f1e843c1a9dd68184b273cdbcda3c"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\278_aug_3.jpg",
+      "train_filename": "278_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "278",
+      "hash": "f6a34520fe8413e13614c3bfb41b08f1"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\280_aug_1.jpg",
+      "train_filename": "280_aug_1.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "280",
+      "hash": "034252ff7bf7e66c7688a136372c4fdc"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\280_aug_2.jpg",
+      "train_filename": "280_aug_2.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "280",
+      "hash": "deaef93983107077319706145c6ea705"
+    },
+    {
+      "train_path": "WagnerDataset/train\\Grade 0\\280_aug_3.jpg",
+      "train_filename": "280_aug_3.jpg",
+      "train_grade": "Grade 0",
+      "base_id": "280",
+      "hash": "a18b3f191dee9a25bb0861d32396508e"
+    }
+  ]
+}

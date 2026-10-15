@@ -1,0 +1,48 @@
+{
+    "pred_pathology_id": 0,
+    "pred_pathology_name": "none",
+    "pathology_probs": [
+        0.9457334876060486,
+        0.023931335657835007,
+        0.017786812037229538,
+        0.012548365630209446
+    ],
+    "pred_wagner_grade": 1,
+    "pred_wagner_name": "Grade 1",
+    "wagner_probs": [
+        0.007026314735412598,
+        0.9928338527679443,
+        0.00013982312520965934,
+        0.0,
+        3.7885333433775037e-13
+    ],
+    "target_type": "pathology",
+    "target_id": 0,
+    "target_name": "none",
+    "target_score": 1.860961675643921,
+    "runtime_sec": 0.6288497447967529,
+    "xai_method": "all",
+    "model_version": "v3",
+    "model_architecture": "full",
+    "layers_used": {
+        "cnn": "model.backbone.cnn.conv_head",
+        "vit": "model.backbone.vit.layers[-1].blocks[-1].norm1",
+        "fused": "dual-branch symmetrical fusion (0.5 * CNN + 0.5 * ViT)",
+        "transformer": "model.backbone.vit.layers[-1].blocks[-1].norm1",
+        "integrated_gradients": "input_pixel_space",
+        "shap": "superpixel_grid_14x14"
+    },
+    "xai_configuration": {
+        "ig_steps": 25,
+        "ig_baseline": "black",
+        "shap_grid_size": 14,
+        "shap_n_evals": 100
+    },
+    "image_path": "C:\\Users\\srian\\Desktop\\WagnerDS\\DFUdataset\\DFUC2021_train\\images\\301000.jpg",
+    "checkpoint_path": "C:\\Users\\srian\\Desktop\\WagnerDS\\checkpoints_a1_full_balanced\\best_checkpoint.pth",
+    "epoch_checkpoint": "N/A",
+    "faithfulness_evaluation": {
+        "aopc_deletion_score": -0.240605182117886,
+        "insertion_auc": 2.029777693748474
+    }
+}

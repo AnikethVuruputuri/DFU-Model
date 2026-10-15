@@ -1,0 +1,79 @@
+Category,Metric_Name,Value,Unit,Evaluation_Split,Notes
+DFUC_Pathology,Accuracy,0.901763,fraction,Validation (n=1191),Overall categorical accuracy
+DFUC_Pathology,Balanced_Accuracy_UAR,0.927853,fraction,Validation (n=1191),Unweighted Average Recall
+DFUC_Pathology,Macro_Precision,0.913376,fraction,Validation (n=1191),Unweighted macro precision
+DFUC_Pathology,Macro_Recall,0.927853,fraction,Validation (n=1191),Unweighted macro recall
+DFUC_Pathology,Macro_F1,0.920128,fraction,Validation (n=1191),Primary DFUC challenge metric
+DFUC_Pathology,Weighted_Precision,0.902235,fraction,Validation (n=1191),Class-support weighted precision
+DFUC_Pathology,Weighted_Recall,0.901763,fraction,Validation (n=1191),Class-support weighted recall
+DFUC_Pathology,Weighted_F1,0.901407,fraction,Validation (n=1191),Class-support weighted F1
+DFUC_Pathology,Micro_F1,0.901763,fraction,Validation (n=1191),Equivalent to accuracy
+DFUC_Pathology,Matthews_Correlation_Coefficient_MCC,0.842765,fraction,Validation (n=1191),Accounts for all 4 confusion cells
+DFUC_Pathology,Cohens_Kappa,0.842049,fraction,Validation (n=1191),Inter-rater agreement over chance
+DFUC_Pathology,AUROC_Macro,0.973058,fraction,Validation (n=1191),One-vs-Rest macro area under ROC
+DFUC_Pathology,AUPRC_Macro,0.953266,fraction,Validation (n=1191),Area under precision-recall curve
+DFUC_Calibration,Expected_Calibration_Error_ECE,0.022423,fraction,Validation (n=1191),10-bin reliability calibration error
+DFUC_Calibration,Brier_Score,0.148226,fraction,Validation (n=1191),Multi-class mean squared probability error
+DFUC_Calibration,Mean_Predictive_Entropy,0.285459,nats,Validation (n=1191),Shannon entropy of softmax distribution
+DFUC_Per_Class,None_Precision,0.910417,fraction,Validation (n=510),Clean non-infected/non-ischaemic
+DFUC_Per_Class,None_Recall,0.856863,fraction,Validation (n=510),Clean non-infected/non-ischaemic
+DFUC_Per_Class,None_F1,0.882828,fraction,Validation (n=510),Clean non-infected/non-ischaemic
+DFUC_Per_Class,None_Support,510,samples,Validation (n=510),Ground truth class count
+DFUC_Per_Class,Infection_Precision,0.878505,fraction,Validation (n=511),Microbiological infection present
+DFUC_Per_Class,Infection_Recall,0.919765,fraction,Validation (n=511),Microbiological infection present
+DFUC_Per_Class,Infection_F1,0.898662,fraction,Validation (n=511),Microbiological infection present
+DFUC_Per_Class,Infection_Support,511,samples,Validation (n=511),Ground truth class count
+DFUC_Per_Class,Ischaemia_Precision,0.895833,fraction,Validation (n=46),Critical minority class (3.8% prevalence)
+DFUC_Per_Class,Ischaemia_Recall,0.934783,fraction,Validation (n=46),Critical minority class (3.8% prevalence)
+DFUC_Per_Class,Ischaemia_F1,0.914894,fraction,Validation (n=46),Critical minority class (3.8% prevalence)
+DFUC_Per_Class,Ischaemia_Support,46,samples,Validation (n=46),Ground truth class count
+DFUC_Per_Class,Both_Precision,0.968750,fraction,Validation (n=124),Concurrent infection + ischaemia
+DFUC_Per_Class,Both_Recall,1.000000,fraction,Validation (n=124),Zero false negatives on dual pathology
+DFUC_Per_Class,Both_F1,0.984127,fraction,Validation (n=124),Concurrent infection + ischaemia
+DFUC_Per_Class,Both_Support,124,samples,Validation (n=124),Ground truth class count
+Wagner_Depth,Overall_Accuracy,0.686469,fraction,Validation (n=303),Exact nominal grade accuracy
+Wagner_Depth,Balanced_Accuracy,0.706109,fraction,Validation (n=303),Unweighted mean recall across 5 grades
+Wagner_Depth,Macro_F1,0.707291,fraction,Validation (n=303),Macro F1 across 5 ordinal grades
+Wagner_Depth,Weighted_F1,0.694010,fraction,Validation (n=303),Support-weighted F1 score
+Wagner_Depth,Mean_Absolute_Error_MAE,0.429043,grades,Validation (n=303),Average grade error distance
+Wagner_Depth,Root_Mean_Squared_Error_RMSE,0.848217,grades,Validation (n=303),Penalizes large grade errors
+Wagner_Depth,Quadratic_Weighted_Kappa_QWK,0.776520,fraction,Validation (n=303),Primary medical ordinal grading metric
+Wagner_Depth,Cohens_Kappa_Unweighted,0.592211,fraction,Validation (n=303),Nominal inter-rater agreement
+Wagner_Depth,Spearman_Rho,0.769480,fraction,Validation (n=303),Rank correlation (p=1.457e-60)
+Wagner_Depth,Pearson_R,0.777110,fraction,Validation (n=303),Linear correlation (p=1.740e-62)
+Wagner_Depth,Exact_Match_Accuracy,0.686469,fraction,Validation (n=303),Identical to overall accuracy
+Wagner_Depth,Adjacent_Grade_Accuracy,0.914191,fraction,Validation (n=303),Predictions within +/- 1 grade
+Wagner_Depth,Severe_Error_Rate,0.085809,fraction,Validation (n=303),Predictions off by >= 2 grades
+Wagner_Per_Grade,Grade_0_Precision,1.000000,fraction,Validation (n=21),Pre-ulcerative / intact skin
+Wagner_Per_Grade,Grade_0_Recall,1.000000,fraction,Validation (n=21),Pre-ulcerative / intact skin
+Wagner_Per_Grade,Grade_0_F1,1.000000,fraction,Validation (n=21),Pre-ulcerative / intact skin
+Wagner_Per_Grade,Grade_0_Support,21,samples,Validation (n=21),Ground truth class count
+Wagner_Per_Grade,Grade_1_Precision,0.815789,fraction,Validation (n=86),Superficial dermal ulcer
+Wagner_Per_Grade,Grade_1_Recall,0.720930,fraction,Validation (n=86),Superficial dermal ulcer
+Wagner_Per_Grade,Grade_1_F1,0.765432,fraction,Validation (n=86),Superficial dermal ulcer
+Wagner_Per_Grade,Grade_1_Support,86,samples,Validation (n=86),Ground truth class count
+Wagner_Per_Grade,Grade_2_Precision,0.584270,fraction,Validation (n=78),Deep ulcer to tendon/capsule/bone
+Wagner_Per_Grade,Grade_2_Recall,0.666667,fraction,Validation (n=78),Deep ulcer to tendon/capsule/bone
+Wagner_Per_Grade,Grade_2_F1,0.622754,fraction,Validation (n=78),Deep ulcer to tendon/capsule/bone
+Wagner_Per_Grade,Grade_2_Support,78,samples,Validation (n=78),Ground truth class count
+Wagner_Per_Grade,Grade_3_Precision,0.354167,fraction,Validation (n=40),Deep ulcer with abscess/osteomyelitis
+Wagner_Per_Grade,Grade_3_Recall,0.425000,fraction,Validation (n=40),Deep ulcer with abscess/osteomyelitis
+Wagner_Per_Grade,Grade_3_F1,0.386364,fraction,Validation (n=40),Deep ulcer with abscess/osteomyelitis
+Wagner_Per_Grade,Grade_3_Support,40,samples,Validation (n=40),Ground truth class count
+Wagner_Per_Grade,Grade_4_Precision,0.811594,fraction,Validation (n=78),Localized gangrene (forefoot/heel)
+Wagner_Per_Grade,Grade_4_Recall,0.717949,fraction,Validation (n=78),Localized gangrene (forefoot/heel)
+Wagner_Per_Grade,Grade_4_F1,0.761905,fraction,Validation (n=78),Localized gangrene (forefoot/heel)
+Wagner_Per_Grade,Grade_4_Support,78,samples,Validation (n=78),Ground truth class count
+Efficiency_Hardware,Total_Parameters,59783374,count,Full Architecture,EfficientNetV2-S + Swin-Tiny + Projections + Disentangler + Heads
+Efficiency_Hardware,Trainable_Parameters,59783374,count,Full Architecture,All parameters updated with differential LR
+Efficiency_Hardware,Non_Trainable_Parameters,0,count,Full Architecture,Zero frozen parameters
+Efficiency_Hardware,Model_Size_FP32,228.06,MB,Storage/RAM,Raw model parameter buffer
+Efficiency_Hardware,Model_Size_FP16,114.03,MB,Storage/RAM,Half-precision quantized buffer
+Efficiency_Hardware,Inference_Latency_Single_Image,80.94,ms,RTX 3050 Laptop GPU,Batch size 1 (224x224 RGB input)
+Efficiency_Hardware,Inference_Throughput_Single_Image,12.4,FPS,RTX 3050 Laptop GPU,Batch size 1 throughput
+Efficiency_Hardware,Training_Step_Latency,532.92,ms,RTX 3050 Laptop GPU,Batch size 8 forward + backward + optimizer step
+Efficiency_Hardware,Training_Throughput,45.0,images/sec,RTX 3050 Laptop GPU,Batch size 8 with AMP GradScaler
+Efficiency_Hardware,Peak_GPU_VRAM_Training,4310.2,MB,RTX 3050 Laptop GPU,Maximum reserved CUDA memory (6GB total capacity)
+Efficiency_Hardware,CUDA_Allocated_Memory,966.3,MB,RTX 3050 Laptop GPU,Active tensor allocations
+Efficiency_Hardware,Epoch_Training_Time_Measured,13.32,minutes,RTX 3050 Laptop GPU,6000 multi-task pairs per epoch
+Efficiency_Hardware,Full_Training_Duration_Measured,8.0,hours,RTX 3050 Laptop GPU,Epoch 36 stopping time (checkpoints_a1_full_balanced)

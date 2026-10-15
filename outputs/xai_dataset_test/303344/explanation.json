@@ -1,0 +1,47 @@
+{
+    "pred_pathology_id": 1,
+    "pred_pathology_name": "infection",
+    "pathology_probs": [
+        0.013560058549046516,
+        0.9403578639030457,
+        0.03674702346324921,
+        0.00933503545820713
+    ],
+    "pred_wagner_grade": 2,
+    "pred_wagner_name": "Grade 2",
+    "wagner_probs": [
+        6.318092346191406e-06,
+        0.00013327598571777344,
+        0.9998602867126465,
+        9.009082191369089e-08,
+        8.667838891085466e-09
+    ],
+    "target_type": "pathology",
+    "target_id": 1,
+    "target_name": "infection",
+    "target_score": 2.0122311115264893,
+    "runtime_sec": 0.09317302703857422,
+    "xai_method": "gradcam",
+    "model_version": "v3",
+    "model_architecture": "full",
+    "layers_used": {
+        "cnn": "model.backbone.cnn.conv_head",
+        "vit": "model.backbone.vit.layers[-1].blocks[-1].norm1",
+        "fused": "dual-branch symmetrical fusion (0.5 * CNN + 0.5 * ViT)"
+    },
+    "xai_configuration": {
+        "ig_steps": 25,
+        "ig_baseline": "black",
+        "shap_grid_size": 14,
+        "shap_n_evals": 100
+    },
+    "image_name": "303344.jpg",
+    "ground_truth_id": 1,
+    "ground_truth_name": "infection",
+    "is_correct": true,
+    "checkpoint_path": "C:\\Users\\srian\\Desktop\\WagnerDS\\checkpoints_a1_full_balanced\\best_checkpoint.pth",
+    "faithfulness_evaluation": {
+        "aopc_deletion_score": -0.00010034773084852431,
+        "insertion_auc": 2.0139703273773195
+    }
+}

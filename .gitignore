@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+
+# Large Model Checkpoints & Binary Weights (GitHub 100MB limit)
+*.pth
+*.pt
+*.bin
+*.tmp
+checkpoints*/*.pth
+checkpoints*/*.tmp
+
+# Datasets (Large multi-gigabyte image directories)
+DFUdataset/
+WagnerDataset/
+
+# Temporary and log files
+*.log
+outputs/temp*
+
+# IDE & OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

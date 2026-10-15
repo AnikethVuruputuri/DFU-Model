@@ -1,0 +1,41 @@
+{
+    "pred_pathology_id": 1,
+    "pred_pathology_name": "infection",
+    "pathology_probs": [
+        0.11907956004142761,
+        0.8761386871337891,
+        0.0017388795968145132,
+        0.0030428951140493155
+    ],
+    "pred_wagner_grade": 2,
+    "pred_wagner_name": "Grade 2",
+    "wagner_probs": [
+        9.5367431640625e-07,
+        7.987022399902344e-06,
+        0.9390490055084229,
+        0.06093858182430267,
+        3.4821446206478868e-06
+    ],
+    "target_type": "wagner",
+    "target_id": 2,
+    "target_name": "Grade 2",
+    "target_score": 0.9390490055084229,
+    "runtime_sec": 0.5935540199279785,
+    "xai_method": "gradcam",
+    "model_version": "v3",
+    "model_architecture": "full",
+    "layers_used": {
+        "cnn": "model.backbone.cnn.conv_head",
+        "vit": "model.backbone.vit.layers[-1].blocks[-1].norm1",
+        "fused": "dual-branch symmetrical fusion (0.5 * CNN + 0.5 * ViT)"
+    },
+    "xai_configuration": {
+        "ig_steps": 25,
+        "ig_baseline": "black",
+        "shap_grid_size": 14,
+        "shap_n_evals": 100
+    },
+    "image_path": "C:\\Users\\srian\\Desktop\\WagnerDS\\WagnerDataset\\valid\\Grade 2\\0_jpg.rf.85a12f053d227e44e8dd5ee70ad1ba9b.jpg",
+    "checkpoint_path": "C:\\Users\\srian\\Desktop\\WagnerDS\\checkpoints_a1_full_balanced\\best_checkpoint.pth",
+    "epoch_checkpoint": "N/A"
+}
