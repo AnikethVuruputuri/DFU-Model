@@ -13,6 +13,9 @@ Integrates:
 
 import os
 import sys
+
+# Prevent CUDA memory fragmentation on GPUs with <= 16GB VRAM (e.g. NVIDIA T4, RTX 3050)
+os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
 import time
 import signal
 import random
@@ -287,7 +290,7 @@ def train_dfu_siam(args):
         )
         wagner_val_loader = DataLoader(
             wagner_val_ds,
-            batch_size=max(args.batch_size * 4, 32),
+            batch_size=max(args.batch_size * 2, 16),
             shuffle=False,
             num_workers=args.num_workers,
             pin_memory=(device.type == 'cuda'),
@@ -764,6 +767,8 @@ def train_dfu_siam(args):
 
         # Validation & Evaluation
         if epoch % args.val_interval == 0 or epoch == args.epochs:
+            if device.type == 'cuda':
+                torch.cuda.empty_cache()
             if args.lambda_path > 0.0:
                 macro_f1, dfu_metrics = evaluate_dfu_classifier(model, val_single_loader, device)
                 dfu_str = f"Macro-F1: {macro_f1:.4f} | Acc: {dfu_metrics['accuracy']:.4f} | UAR: {dfu_metrics.get('uar', 0.0):.4f} | MCC: {dfu_metrics.get('mcc', 0.0):.4f}"
@@ -862,6 +867,9 @@ def train_dfu_siam(args):
         if args.keep_all_epochs:
             per_epoch_path = os.path.join(args.output_dir, f"epoch_{epoch:03d}.pth")
             save_atomic_checkpoint(epoch_ckpt_dict, per_epoch_path)
+
+        if device.type == 'cuda':
+            torch.cuda.empty_cache()
 
     total_duration = time.time() - start_time
     if not interrupted['flag']:

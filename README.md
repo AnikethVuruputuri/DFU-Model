@@ -49,7 +49,7 @@ python -c "from dfu_siam_model import DFUSiamModel; m = DFUSiamModel(); print('D
 ### 1. Kaggle 2x T4 Parallel Ablations (5.0 - 5.5 Hours Total)
 Distributes the 8 ablation experiments across both T4 GPUs in parallel:
 ```bash
-python run_kaggle_ablations_2x_t4.py --epochs 25 --batch_size 32 --workers 4
+python run_kaggle_ablations_2x_t4.py --epochs 25 --batch_size 16 --workers 4
 ```
 
 ### 2. Run Complete Smart Ablation Suite (Single GPU / Cloud / Cluster)

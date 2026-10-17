@@ -193,6 +193,7 @@ def worker_thread(gpu_id: int, task_queue: Queue, args, results_dict: dict):
         start_t = time.time()
         env = os.environ.copy()
         env["CUDA_VISIBLE_DEVICES"] = f"{gpu_id}"
+        env["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 
         with open(log_file, "a") as f_out:
             f_out.write(f"\n=== Run Started on GPU {gpu_id} at {time.ctime()} ===\n")
@@ -292,7 +293,7 @@ def generate_summary_report(results_dict):
 def main():
     parser = argparse.ArgumentParser(description="Kaggle Dual-T4 DFU-SIAM Ablation Runner")
     parser.add_argument("--epochs", type=int, default=25, help="Number of epochs per ablation")
-    parser.add_argument("--batch_size", type=int, default=32, help="Batch size per GPU (32 is optimal for T4)")
+    parser.add_argument("--batch_size", type=int, default=16, help="Batch size per GPU (16 is optimal for T4)")
     parser.add_argument("--workers", type=int, default=4, help="DataLoader workers per GPU")
     parser.add_argument("--data_dir", type=str, default=None, help="Path to DFUdataset")
     parser.add_argument("--wagner_dir", type=str, default=None, help="Path to WagnerDataset")

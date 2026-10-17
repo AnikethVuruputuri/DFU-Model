@@ -10,7 +10,7 @@ echo "=========================================================="
 nvidia-smi
 
 # Run Python parallel orchestrator
-python run_kaggle_ablations_2x_t4.py --epochs 25 --batch_size 32 --workers 4
+python run_kaggle_ablations_2x_t4.py --epochs 25 --batch_size 16 --workers 4
 
 echo "=========================================================="
 echo "    ALL KAGGLE ABLATIONS COMPLETED!                       "
