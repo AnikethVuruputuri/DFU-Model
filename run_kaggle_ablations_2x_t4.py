@@ -172,7 +172,7 @@ def worker_thread(gpu_id: int, task_queue: Queue, args, results_dict: dict):
         cmd = [
             sys.executable, "train_dfu_siam.py",
             "--arch", "full",
-            "--device", f"cuda:{gpu_id}",
+            "--device", "cuda:0",
             "--epochs", str(args.epochs),
             "--batch_size", str(args.batch_size),
             "--num_workers", str(args.workers),
@@ -219,7 +219,15 @@ def worker_thread(gpu_id: int, task_queue: Queue, args, results_dict: dict):
             print(f"✅ [GPU {gpu_id}] {name} COMPLETED in {elapsed_mins:.1f} mins!")
             results_dict[name] = {"status": "SUCCESS", "gpu": gpu_id, "out_dir": out_dir, "time_m": elapsed_mins}
         else:
-            print(f"❌ [GPU {gpu_id}] {name} FAILED with exit code {p.returncode}! See {log_file}")
+            print(f"❌ [GPU {gpu_id}] {name} FAILED with exit code {p.returncode}! Log: {log_file}")
+            try:
+                with open(log_file, "r") as f_err:
+                    err_lines = f_err.readlines()[-15:]
+                print(f"--- [GPU {gpu_id} | {name}] Error Traceback ---")
+                print("".join(err_lines))
+                print("-------------------------------------------------")
+            except Exception:
+                pass
             results_dict[name] = {"status": "FAILED", "gpu": gpu_id, "out_dir": out_dir, "code": p.returncode}
 
         task_queue.task_done()
