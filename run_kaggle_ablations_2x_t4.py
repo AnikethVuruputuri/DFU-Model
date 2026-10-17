@@ -319,6 +319,7 @@ def main():
     parser.add_argument("--workers", type=int, default=4, help="DataLoader workers per GPU")
     parser.add_argument("--data_dir", type=str, default=None, help="Path to DFUdataset")
     parser.add_argument("--wagner_dir", type=str, default=None, help="Path to WagnerDataset")
+    parser.add_argument("--only", type=str, default=None, help="Comma-separated list of ablation names to run (e.g. 'A6_StandardCE,A7_NoHardMining')")
     args = parser.parse_args()
 
     # Detect dataset paths if not provided
@@ -348,7 +349,13 @@ def main():
         sys.exit(1)
 
     task_queue = Queue()
-    for ab in ABLATIONS:
+    selected_ablations = ABLATIONS
+    if args.only:
+        targets = [x.strip() for x in args.only.split(",") if x.strip()]
+        selected_ablations = [ab for ab in ABLATIONS if ab["name"] in targets]
+        print(f"🎯 Running ONLY selected ablations: {[ab['name'] for ab in selected_ablations]}")
+
+    for ab in selected_ablations:
         task_queue.put(ab)
 
     results_dict = {}
