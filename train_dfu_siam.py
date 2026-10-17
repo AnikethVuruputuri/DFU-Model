@@ -169,7 +169,10 @@ def train_dfu_siam(args):
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(args.seed)
 
-    device = get_device()
+    if getattr(args, 'device', None):
+        device = torch.device(args.device)
+    else:
+        device = get_device()
     if device.type == 'cuda':
         if getattr(args, 'deterministic', False):
             torch.backends.cudnn.deterministic = True
@@ -876,6 +879,7 @@ if __name__ == "__main__":
     parser.add_argument("--data_dir", type=str, default="DFUdataset", help="Path to DFUdataset directory")
     parser.add_argument("--wagner_dir", type=str, default="WagnerDataset", help="Path to WagnerDataset directory")
     parser.add_argument("--output_dir", type=str, default="checkpoints_v3", help="Output directory for v3 checkpoints")
+    parser.add_argument("--device", type=str, default=None, help="Device to use for training (e.g. 'cuda', 'cuda:0', 'cuda:1', or 'cpu')")
     parser.add_argument("--resume", action="store_true", help="Auto-resume from latest checkpoint in output_dir")
     parser.add_argument("--resume_from", type=str, default=None, help="Explicit checkpoint path to resume training from")
     parser.add_argument("--resume_checkpoint", type=str, default=None, help="Alias for --resume_from for backward compatibility")

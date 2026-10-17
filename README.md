@@ -46,15 +46,21 @@ python -c "from dfu_siam_model import DFUSiamModel; m = DFUSiamModel(); print('D
 
 ## 🏋️ Training Models
 
-### 1. Run Complete Smart Ablation Suite (12 Configurations)
-Automatically runs all 12 ablation experiments (Loss functions, Architectures, Disentanglement, Multi-task heads) with checkpoint resume support and automated summary metrics generation:
+### 1. Kaggle 2x T4 Parallel Ablations (5.0 - 5.5 Hours Total)
+Distributes the 8 ablation experiments across both T4 GPUs in parallel:
+```bash
+python run_kaggle_ablations_2x_t4.py --epochs 25 --batch_size 32 --workers 4
+```
+
+### 2. Run Complete Smart Ablation Suite (Single GPU / Cloud / Cluster)
+Automatically runs all ablation experiments with checkpoint resume support and automated summary metrics generation:
 ```bash
 chmod +x run_smart_ablations.sh
 nohup ./run_smart_ablations.sh > ablation_runner.log 2>&1 &
 tail -f ablation_runner.log
 ```
 
-### 2. Standalone Training (Full Architecture)
+### 3. Standalone Training (Full Architecture)
 Train with default or custom seeds:
 ```bash
 # Seed 42 (Default)
