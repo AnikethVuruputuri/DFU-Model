@@ -183,6 +183,7 @@ def worker_thread(gpu_id: int, task_queue: Queue, args, results_dict: dict):
             "--label_smoothing", "0.05",
             "--num_pairs_per_epoch", "6000",
             "--grad_clip", "1.0",
+            "--checkpoint_every", "0",
             "--output_dir", out_dir,
             "--data_dir", args.data_dir,
             "--wagner_dir", args.wagner_dir,
@@ -290,6 +291,27 @@ def generate_summary_report(results_dict):
     print(f"Saved results CSV to: {csv_path}\n")
 
 
+def cleanup_disk_space():
+    """Removes orphan .tmp files and duplicate legacy checkpoints to ensure plenty of disk space."""
+    import glob
+    cleaned_bytes = 0
+    patterns = [
+        "checkpoints*/*.tmp",
+        "checkpoints*/*dfu_siam_v3_*.pth",
+        "checkpoints*/epoch_checkpoint.pth"
+    ]
+    for pat in patterns:
+        for f in glob.glob(pat):
+            try:
+                sz = os.path.getsize(f)
+                os.remove(f)
+                cleaned_bytes += sz
+            except OSError:
+                pass
+    if cleaned_bytes > 0:
+        print(f"🧹 Cleaned {cleaned_bytes / (1024**2):.1f} MB of redundant temp/legacy files.")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Kaggle Dual-T4 DFU-SIAM Ablation Runner")
     parser.add_argument("--epochs", type=int, default=25, help="Number of epochs per ablation")
@@ -309,6 +331,7 @@ def main():
     print(f"=== Kaggle Dual T4 DFU-SIAM v3 Ablation Runner ===")
     print(f"DFU Dataset Path:    {args.data_dir}")
     print(f"Wagner Dataset Path: {args.wagner_dir}")
+    cleanup_disk_space()
 
     import torch
     num_gpus = torch.cuda.device_count() if torch.cuda.is_available() else 0

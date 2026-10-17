@@ -821,7 +821,6 @@ def train_dfu_siam(args):
                     best_ckpt_dict['zero_shot_metrics'] = zs_eval
 
                 save_atomic_checkpoint(best_ckpt_dict, best_model_path)
-                save_atomic_checkpoint(best_ckpt_dict, legacy_best_path)  # Mirror for backwards compatibility
                 print(f" --> Best DFU-SIAM v3 model saved to {best_model_path} ({args.monitor_metric} = {monitored_val:.4f})")
         else:
             print(f"[Epoch {epoch:02d}/{args.epochs:02d}] Loss: {avg_loss:.4f}")
@@ -860,10 +859,6 @@ def train_dfu_siam(args):
         # Save epoch checkpoint (batch = -1 signifies completed epoch)
         epoch_ckpt_dict = build_checkpoint_payload(epoch, -1, global_step, best_monitored_metric, pair_state_for_saving)
         save_atomic_checkpoint(epoch_ckpt_dict, latest_model_path)
-        save_atomic_checkpoint(epoch_ckpt_dict, legacy_last_path)  # Mirror for backwards compatibility
-
-        if args.save_every_epoch:
-            save_atomic_checkpoint(epoch_ckpt_dict, epoch_model_path)
         if args.keep_all_epochs:
             per_epoch_path = os.path.join(args.output_dir, f"epoch_{epoch:03d}.pth")
             save_atomic_checkpoint(epoch_ckpt_dict, per_epoch_path)
