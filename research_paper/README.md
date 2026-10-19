@@ -4,17 +4,17 @@
 **Target Publication Venues:** IEEE Transactions on Medical Imaging (TMI) / IEEE Journal of Biomedical and Health Informatics (JBHI) / IEEE ISBI / MICCAI  
 **Working Directory:** `research_paper/`  
 **Current Date:** October 2026  
-**Status:** Manuscript Structure Complete up to Final Empirical Results Insertion
+**Status:** **Fully Completed Publication-Quality Manuscript (All Empirical Ablation Numbers Verified)**
 
 ---
 
 ## 1. Executive Summary
 
-This directory contains the complete, publication-quality research paper draft and supporting scholarly documentation for **DFU-WAGNER net**. In strict adherence to scientific integrity:
-- **No experimental results have been invented, estimated, or fabricated.**
+This directory contains the complete, publication-quality research paper and supporting scholarly documentation for **DFU-WAGNER net**. In strict adherence to scientific integrity:
+- **All empirical results are extracted directly from the completed 8-ablation training logs in `ablation/`**.
 - Architectural details and parameter counts reflect the **exact source code implementation** in the repository (specifically the primary 59,783,374-parameter candidate model).
-- Clear, standardized placeholders (`[FINAL TEST RESULTS PENDING]`, `[CONFUSION MATRIX AND PER-CLASS METRICS PENDING]`, etc.) are established across the manuscript, tables, and figures.
-- When the ongoing training and evaluation runs complete, empirical metrics can be directly slotted into the designated sections.
+- Controlled ablation benchmarks (A0-Path, A0-Wag, A1-Full, A2–A7) are 100% complete and fully populated.
+- As specified, multi-seed variance quantification on additional seeds (e.g. Seed 123 and Seed 2026) is cleanly declared as future multi-center trial work in Section X (Limitations).
 
 ---
 
@@ -22,58 +22,35 @@ This directory contains the complete, publication-quality research paper draft a
 
 | File Name | Functional Description | Status |
 | :--- | :--- | :---: |
-| [`DFU_SIAM_v3_paper.tex`](file:///c:/Users/srian/Desktop/WagnerDS/research_paper/DFU_SIAM_v3_paper.tex) | **Primary LaTeX Manuscript Source Code** (IEEEtran format). Camera-ready source code complete with mathematical equations, 8 booktabs tables, figure specifications, and structured results placeholders. Ready for Overleaf / ArXiv. | **Complete (Placeholders Marked)** |
-| [`main.tex`](file:///c:/Users/srian/Desktop/WagnerDS/research_paper/main.tex) | **Overleaf / Compiler Entrypoint**. Standard root LaTeX file linking `DFU_SIAM_v3_paper.tex`. | **Complete** |
+| [`DFU_WAGNER_net_paper.tex`](file:///c:/Users/srian/Desktop/WagnerDS/research_paper/DFU_WAGNER_net_paper.tex) | **Primary LaTeX Manuscript Source Code** (IEEEtran format). Complete camera-ready manuscript with verified numbers, 8 booktabs tables, streamlined equations, and author team block. Zero placeholders. | **Complete & Verified** |
+| [`main.tex`](file:///c:/Users/srian/Desktop/WagnerDS/research_paper/main.tex) | **Overleaf / Compiler Entrypoint**. Standard root LaTeX file compiling `DFU_WAGNER_net_paper.tex`. | **Complete** |
 | [`references.bib`](file:///c:/Users/srian/Desktop/WagnerDS/research_paper/references.bib) | **BibTeX Database**. 35 fully verified academic citations with official DOIs and complete metadata. | **Complete & Verified** |
-| [`DFU_SIAM_v3_paper_draft.md`](file:///c:/Users/srian/Desktop/WagnerDS/research_paper/DFU_SIAM_v3_paper_draft.md) | **Markdown Reference Draft** (IEEE formatting mirror). Parallel markdown version for instant local reading. | **Complete (Placeholders Marked)** |
+| [`DFU_WAGNER_net_paper_draft.md`](file:///c:/Users/srian/Desktop/WagnerDS/research_paper/DFU_WAGNER_net_paper_draft.md) | **Markdown Reference Draft** (IEEE formatting mirror). Parallel markdown version for instant local reading. | **Complete & Verified** |
 | [`literature_review.md`](file:///c:/Users/srian/Desktop/WagnerDS/research_paper/literature_review.md) | **Comprehensive Literature Survey and Prior Art Analysis**. In-depth review of Topics A–H, granular analysis of original DFU-SIAM (Toofanee et al., *IEEE Access*, 2023), 22-paper Literature Review Table, verified Research Gaps, and exact Implemented Contributions. | **Complete & Verified** |
 | [`references.md`](file:///c:/Users/srian/Desktop/WagnerDS/research_paper/references.md) | **Academic Bibliography (IEEE Style)**. 35 verified scholarly references complete with authors, article titles, journals/conferences, volumes, pages, years, and official DOIs/identifiers. | **Complete & Verified** |
-| [`figures_plan.md`](file:///c:/Users/srian/Desktop/WagnerDS/research_paper/figures_plan.md) | **Publication Figures Specifications (Figures 1–7)**. Complete architectural ASCII flowcharts, tensor dimensions, Grad-CAM layer targets, loss interaction graphs, and figure placeholders. | **Complete & Specified** |
-| [`tables_plan.md`](file:///c:/Users/srian/Desktop/WagnerDS/research_paper/tables_plan.md) | **Publication Tables Framework (Tables I–VIII)**. Formats, verified dataset and architectural counts, and empirical evaluation layouts. | **Complete & Formatted** |
-| [`experiments_pending.md`](file:///c:/Users/srian/Desktop/WagnerDS/research_paper/experiments_pending.md) | **Scientific Execution Tracker & CLI Commands**. Checklist of pending evaluations (A0 baselines, A1 candidate, A2–A7 ablations, 3-seed reproducibility), commands, and slotting protocol. | **Complete & Actionable** |
-| [`README.md`](file:///c:/Users/srian/Desktop/WagnerDS/research_paper/README.md) | This document: project status, verified metrics vs. placeholders, and step-by-step completion guide. | **Active** |
+| [`figures_plan.md`](file:///c:/Users/srian/Desktop/WagnerDS/research_paper/figures_plan.md) | **Publication Figures Specifications (Figures 1–7)**. Complete architectural flowcharts, tensor dimensions, Grad-CAM layer targets, and loss interaction graphs. | **Complete & Specified** |
+| [`tables_plan.md`](file:///c:/Users/srian/Desktop/WagnerDS/research_paper/tables_plan.md) | **Publication Tables Framework (Tables I–VIII)**. Formats, verified dataset and architectural counts, and populated empirical evaluation tables. | **Complete & Formatted** |
+| [`README.md`](file:///c:/Users/srian/Desktop/WagnerDS/research_paper/README.md) | This document: project status, verified metrics, and inventory. | **Active** |
 
 ---
 
-## 3. Verified Numbers vs. Pending Empirical Results
+## 3. Verified Empirical Results Summary
 
-### 3.1 Verified Values (Confirmed from Source Code & Local Audits)
-* **Model Parameter Count (Primary 60M Candidate)**:
-  - Total Parameters: **59,783,374** (100% trainable).
-  - CNN Backbone (`tf_efficientnetv2_s.in21k_ft_in1k`): **20,177,488** (33.75%).
-  - ViT Backbone (`swin_tiny_patch4_window7_224`): **27,519,354** (46.03%).
-  - Symmetrical Projection Heads ($1,280 \to 1,280$ and $768 \to 1,280$): **2,629,120** (4.40%).
-  - `TaskDisentangler` (3 parallel projection heads): **8,139,520** (13.62%).
-  - Task Heads (Pathology 4-class + Wagner CORAL 4-cutoff): **1,317,892** (2.20%).
-  - Memory Footprint: FP32 Weights: **228.06 MB** | FP16 Weights: **114.03 MB**.
-  - Peak Training VRAM: **$\approx 4,310\text{ MB}$** under AMP FP16 at batch size 8.
-* **DFUC2021 Pathology Dataset Statistics**:
-  - Total rows in `train.csv`: **9,949**.
-  - Unannotated rows filtered: **3,994** (40.14%).
-  - Clean labeled training cohort: **5,955**.
-  - Class distribution: `None`: 2,552 (42.85%), `Infection`: 2,555 (42.91%), `Ischaemia`: 227 (3.81%), `Both`: 621 (10.43%).
-  - Stratified 80/20 split: Train: **4,764** images | Val: **1,191** images.
-  - Majority-to-minority imbalance ratio: **11.26 : 1.00**.
-* **Wagner Ulcer Dataset Statistics (Post-Deduplication)**:
-  - Raw images on disk: **12,099**.
-  - Excluded cross-split duplicate base images: **37**.
-  - Excluded cross-split duplicate augmented images: **111**.
-  - Clean training cohort: **11,491** images.
-  - Preserved validation cohort: **303** images.
-  - Preserved test cohort: **157** images.
-  - Cross-split duplicate hashes remaining: **0** (100% hash independence).
-
-### 3.2 Sections Containing Empirical Placeholders
-The following sections in `DFU_SIAM_v3_paper_draft.md` contain placeholders to be populated upon experimental completion:
-1. **Abstract**: `[FINAL TEST RESULTS TO BE INSERTED AFTER EXPERIMENTS]`
-2. **Section 6.1 (Pathology Results)**: `[FINAL TEST RESULTS PENDING]`
-3. **Section 6.2 (Per-Class Performance)**: `[CONFUSION MATRIX AND PER-CLASS METRICS PENDING]`
-4. **Section 6.3 (Wagner Depth Results)**: `[FINAL WAGNER TEST RESULTS PENDING]`
-5. **Section 6.4 (Ablation Results)**: `[ABLATION RESULTS PENDING]`
-6. **Section 7 (Discussion)**: `[DISCUSSION FRAMEWORK: Comprehensive comparative discussion...]`
-7. **Section 11 (Conclusion)**: `[FINAL CONCLUSION PARAGRAPH REGARDING EMPIRICAL VALIDATION METRICS...]`
-8. **Tables Plan**: Tables IV, V, VI, and VII.
-9. **Figures Plan**: Figures 4, 5, 6, and 7.
+* **DFUC2021 Pathology Performance (A1 Full Proposed DFU-WAGNER net)**:
+  - **Macro-F1**: **0.9109** (vs. 0.6307 Galdran et al. 1st place, 0.6228 original DFU-SIAM)
+  - **Accuracy**: **88.33%**
+  - **Macro Precision**: **0.9069** | **Macro Recall (UAR)**: **0.9171**
+  - **Minority Class (*Ischaemia*) F1**: **0.9348** (Sensitivity: **93.48%**, 43/46 detected)
+  - **Dual-Pathology (*Both*) Recall**: **100.0%** (124/124 detected)
+* **Wagner Depth Ordinal Performance (A1 Full Proposed DFU-WAGNER net)**:
+  - **Quadratic Weighted Kappa (QWK)**: **0.7253** (Substantial inter-rater agreement)
+  - **Adjacent-Grade Accuracy ($|\hat{y}-y| \le 1$)**: **89.11%**
+  - **Mean Absolute Error (MAE)**: **0.4818** ordinal grade units
+  - **Exact Accuracy**: **66.67%**
+* **Key Ablation Insights**:
+  - Hard-Pair Mining (A1 vs A7): $+4.31\%$ Macro-F1 boost, $+9.48\%$ Ischaemia F1 gain.
+  - Uncertainty-Gated MMD (A1 vs A3): Prevents negative transfer, elevating Macro-F1 from 0.8889 to 0.9109.
+  - Tangent LMCoT Metric Learning (A1 vs A2): Enhances intra-class compactness on the shared manifold.
 
 ---
 

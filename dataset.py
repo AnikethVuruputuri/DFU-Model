@@ -352,8 +352,11 @@ class WagnerSingleDataset(Dataset):
     Dataset for Wagner-grade depth dataset (Grades 0-4).
     Supports single view (standard evaluation/training) or dual stochastic views (BYOL).
     Supports deduplication exclusion manifests to prevent evaluation split leakage.
+    Supports clean_manifest for cross-dataset leak-free quarantine protocol.
     """
-    def __init__(self, data_dir, transform=None, is_byol=False, exclude_manifest="wagner_dedup_manifest.json"):
+    def __init__(self, data_dir, transform=None, is_byol=False, 
+                 exclude_manifest="wagner_dedup_manifest.json",
+                 clean_manifest=None):
         self.data_dir = data_dir
         self.is_byol = is_byol
         if transform is not None:
@@ -365,6 +368,11 @@ class WagnerSingleDataset(Dataset):
 
         # Load exclusion list if manifest exists and is provided
         self.excluded_paths = set()
+        self.excluded_basenames = set()
+        
+        is_training_dir = "train" in os.path.normpath(data_dir).lower().split(os.sep)
+
+        # 1. Internal Wagner deduplication exclusions (148 images)
         if exclude_manifest and os.path.exists(exclude_manifest):
             try:
                 import json
@@ -372,9 +380,24 @@ class WagnerSingleDataset(Dataset):
                     manifest = json.load(f)
                 for item in manifest.get('exact_duplicates', []) + manifest.get('augmented_variants', []):
                     if 'train_path' in item:
-                        self.excluded_paths.add(os.path.normpath(item['train_path']).lower())
+                        norm_p = os.path.normpath(item['train_path']).lower()
+                        self.excluded_paths.add(norm_p)
+                        self.excluded_basenames.add(os.path.basename(norm_p))
             except Exception as e:
                 print(f"[Warning] Failed to load exclude_manifest {exclude_manifest}: {e}")
+
+        # 2. Cross-dataset leak-free quarantine exclusions (120 images)
+        if clean_manifest and os.path.exists(clean_manifest) and is_training_dir:
+            try:
+                import json
+                with open(clean_manifest, 'r') as f:
+                    cmanifest = json.load(f)
+                for rel_p in cmanifest.get('wagner_train_cross_exclusions', []):
+                    norm_p = os.path.normpath(rel_p).lower()
+                    self.excluded_paths.add(norm_p)
+                    self.excluded_basenames.add(os.path.basename(norm_p))
+            except Exception as e:
+                print(f"[Warning] Failed to load clean_manifest {clean_manifest}: {e}")
 
         self.img_paths = []
         self.labels = []
@@ -387,7 +410,8 @@ class WagnerSingleDataset(Dataset):
                 for fname in os.listdir(grade_dir):
                     if fname.lower().endswith(('.jpg', '.jpeg', '.png')):
                         full_path = os.path.join(grade_dir, fname)
-                        if self.excluded_paths and os.path.normpath(full_path).lower() in self.excluded_paths:
+                        norm_full = os.path.normpath(full_path).lower()
+                        if fname.lower() in self.excluded_basenames or norm_full in self.excluded_paths:
                             continue
                         self.img_paths.append(full_path)
                         self.labels.append(label)

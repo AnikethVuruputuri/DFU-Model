@@ -39,6 +39,7 @@ from dataset import (
     InterleavedDataLoader, get_dfu_transforms, get_dfu_transforms_v2
 )
 from fusion_eval import evaluate_wagner_ordinal, evaluate_zero_shot_cross_taxonomy
+from leakage_guard import assert_pre_training_leakage_free, compute_file_md5
 
 
 def save_atomic_checkpoint(state_dict: dict, target_path: str):
@@ -223,6 +224,19 @@ def train_dfu_siam(args):
         df, test_size=args.val_split, random_state=args.seed, stratify=df['class']
     )
 
+    # Clean Manifest Quarantine Protocol
+    clean_manifest_path = getattr(args, 'clean_manifest', None)
+    if clean_manifest_path and os.path.exists(clean_manifest_path):
+        import json
+        with open(clean_manifest_path, 'r') as f:
+            cmanifest = json.load(f)
+        dfu_exclusions = set(cmanifest.get('dfu_train_exclusions', []))
+        orig_train_count = len(train_df)
+        train_df = train_df[~train_df['image'].isin(dfu_exclusions)].reset_index(drop=True)
+        print(f"[Clean Split Protocol] Quarantined {orig_train_count - len(train_df)} cross-colliding images from DFU training set.")
+        print(f"  --> Clean DFU Training Samples: {len(train_df)}")
+        print(f"  --> Clean DFU Validation Samples: {len(val_df)} (preserved, untouched)")
+
     temp_train_csv = os.path.join(args.output_dir, "temp_train_split.csv")
     temp_val_csv = os.path.join(args.output_dir, "temp_val_split.csv")
     train_df.to_csv(temp_train_csv, index=False)
@@ -263,22 +277,34 @@ def train_dfu_siam(args):
     )
 
     # Initialize Wagner dataset loaders if multi-task enabled
+    wagner_train_ds = None
+    wagner_val_ds = None
+    wagner_te_ds = None
     if args.enable_wagner:
         wagner_train_dir = os.path.join(args.wagner_dir, "train")
         wagner_val_dir = os.path.join(args.wagner_dir, "valid")
+        wagner_test_dir = os.path.join(args.wagner_dir, "test")
         if not os.path.exists(wagner_train_dir):
             wagner_train_dir = args.wagner_dir
 
         wagner_train_ds = WagnerSingleDataset(
             wagner_train_dir,
             is_byol=False,
-            transform=train_transform
+            transform=train_transform,
+            clean_manifest=clean_manifest_path
         )
         wagner_val_ds = WagnerSingleDataset(
             wagner_val_dir if os.path.exists(wagner_val_dir) else wagner_train_dir,
             is_byol=False,
-            transform=get_dfu_transforms(is_train=False, img_size=(args.img_size, args.img_size))
+            transform=get_dfu_transforms(is_train=False, img_size=(args.img_size, args.img_size)),
+            clean_manifest=clean_manifest_path
         )
+        wagner_te_ds = WagnerSingleDataset(
+            wagner_test_dir,
+            is_byol=False,
+            transform=get_dfu_transforms(is_train=False, img_size=(args.img_size, args.img_size)),
+            clean_manifest=clean_manifest_path
+        ) if os.path.exists(wagner_test_dir) else None
 
         wagner_train_loader = DataLoader(
             wagner_train_ds,
@@ -299,6 +325,18 @@ def train_dfu_siam(args):
 
         interleaved_train_loader = InterleavedDataLoader(train_pair_loader, wagner_train_loader, mode='paired_step')
         print(f"Wagner Dataset loaded: {len(wagner_train_ds)} train samples, {len(wagner_val_ds)} val samples.")
+
+    # Mandatory Pre-Training Cryptographic Leakage Assertion
+    leakage_report = None
+    if clean_manifest_path and not getattr(args, 'skip_leakage_assertion', False):
+        leakage_report = assert_pre_training_leakage_free(
+            dfu_train_dataset=train_pair_dataset,
+            dfu_val_dataset=val_single_dataset,
+            wagner_train_dataset=wagner_train_ds if args.enable_wagner else None,
+            wagner_val_dataset=wagner_val_ds if args.enable_wagner else None,
+            wagner_test_dataset=wagner_te_ds if args.enable_wagner else None,
+            clean_manifest_path=clean_manifest_path
+        )
 
     # Initialize DFU-SIAM v3 Model
     model = DFUSiamV3(
@@ -328,10 +366,24 @@ def train_dfu_siam(args):
     # Save experiment config
     import json
     import datetime
+    import subprocess
+    try:
+        git_rev = subprocess.check_output(["git", "rev-parse", "HEAD"], stderr=subprocess.DEVNULL).decode('utf-8').strip()
+    except Exception:
+        git_rev = "git_unavailable"
+
+    manifest_hash = None
+    if clean_manifest_path and os.path.exists(clean_manifest_path):
+        manifest_hash = compute_file_md5(clean_manifest_path)
+
     config_data = {
         "args": vars(args),
         "model_params": p_info,
         "timestamp": datetime.datetime.now().isoformat(),
+        "git_revision": git_rev,
+        "clean_manifest_hash": manifest_hash,
+        "clean_manifest_path": clean_manifest_path,
+        "leakage_verification": leakage_report["status"] if leakage_report else "skipped",
         "versions": {
             "python": sys.version,
             "pytorch": torch.__version__,
@@ -510,8 +562,20 @@ def train_dfu_siam(args):
         'train_loss_components': [],
         'val_metrics_dfu': [],
         'val_metrics_wagner': [],
-        'gap': []
+        'gap': [],
+        'epoch_diagnostics': []
     }
+    lc_file = os.path.join(args.output_dir, "learning_curves.json")
+    if resume_target and os.path.exists(lc_file):
+        try:
+            with open(lc_file, "r") as f:
+                loaded_lc = json.load(f)
+            for k in learning_curves.keys():
+                if k in loaded_lc:
+                    learning_curves[k] = loaded_lc[k]
+            print(f"[Resume] Preserved {len(learning_curves['train_loss_total'])} epochs of learning curve history.")
+        except Exception as e:
+            print(f"[Resume Warning] Could not parse existing learning_curves.json: {e}")
 
     for epoch in range(start_epoch, args.epochs + 1):
         if interrupted['flag']:
@@ -529,6 +593,7 @@ def train_dfu_siam(args):
                     if param_group.get('weight_decay') == args.weight_decay and len(optimizer.param_groups) > 1:
                         param_group['lr'] = args.lr_head * 0.1
 
+        epoch_start_time = time.time()
         print(f"\n>>> Starting Epoch {epoch:02d}/{args.epochs:02d} ...")
         model.train()
         total_loss = 0.0
@@ -842,6 +907,24 @@ def train_dfu_siam(args):
             val_acc = dfu_metrics.get('accuracy', 0.0)
             # pseudo train acc could be derived but we just store the gap as train_loss vs val_loss for simplicity
             learning_curves['gap'].append({'train_loss': epoch_train_loss, 'val_acc': val_acc})
+
+        # Epoch Diagnostics (runtime, GPU memory, learning rates)
+        epoch_dur = time.time() - epoch_start_time
+        gpu_alloc = (torch.cuda.memory_allocated(device) / (1024**2)) if device.type == 'cuda' else 0.0
+        gpu_res = (torch.cuda.memory_reserved(device) / (1024**2)) if device.type == 'cuda' else 0.0
+        lr_bb = float(optimizer.param_groups[0]['lr']) if optimizer.param_groups else 0.0
+        lr_hd = float(optimizer.param_groups[1]['lr']) if len(optimizer.param_groups) > 1 else lr_bb
+        diag_entry = {
+            'epoch': epoch,
+            'duration_sec': float(round(epoch_dur, 2)),
+            'gpu_mem_alloc_mb': float(round(gpu_alloc, 2)),
+            'gpu_mem_reserved_mb': float(round(gpu_res, 2)),
+            'lr_backbone': lr_bb,
+            'lr_head': lr_hd
+        }
+        if 'epoch_diagnostics' not in learning_curves:
+            learning_curves['epoch_diagnostics'] = []
+        learning_curves['epoch_diagnostics'].append(diag_entry)
         
         with open(os.path.join(args.output_dir, "learning_curves.json"), "w") as f:
             json.dump(learning_curves, f, indent=4)
@@ -961,8 +1044,10 @@ if __name__ == "__main__":
     # Augmentation
     parser.add_argument("--augmentation_level", type=str, default="baseline", choices=["baseline","mild","strong","clinical"], help="Data augmentation intensity level")
 
-    # Experiment Naming
+    # Experiment Naming & Clean Manifest Protocol
     parser.add_argument("--experiment_name", type=str, default=None, help="Name for this experiment run")
+    parser.add_argument("--clean_manifest", type=str, default="research_paper/clean_leak_free_split_manifest.json", help="Path to clean leak-free split quarantine manifest")
+    parser.add_argument("--skip_leakage_assertion", action="store_true", help="Skip pre-training cryptographic leakage assertion (not recommended)")
 
     args = parser.parse_args()
     train_dfu_siam(args)

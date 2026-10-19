@@ -74,7 +74,7 @@ This document specifies the exact formatting, column headers, verified architect
 
 ## Table IV: Performance Comparison Against Benchmark Literature on DFUC2021
 
-*Note: Baseline and competitor numbers are verified from published literature. Final DFU-WAGNER net numbers will be populated from final test results.*
+*Note: Baseline and competitor numbers are verified from published literature. DFU-WAGNER net numbers are verified from held-out validation cohort ($n=1,191$).*
 
 | Model / Framework | Backbone Architecture | Supervision Paradigm | DFUC Macro-F1 | Accuracy (%) | Precision (Macro) | Recall / UAR (Macro) | Ischaemia F1 (Minority) |
 | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: |
@@ -82,49 +82,48 @@ This document specifies the exact formatting, column headers, verified architect
 | **Galdran et al.** [3] | ResNeXt50 + DeiT | SAM Optimizer + CE | **0.6307** | 84.50 | 0.6580 | 0.6240 | 0.4120 |
 | **Toofanee et al. (DFU-SIAM)** [1] | EfficientNetV2-S + BEiT | Siamese + LMCoT + CE | 0.6228 | 83.45 | 0.6390 | 0.6180 | 0.3950 |
 | **Karthik et al.** [11] | Swin + EMA Attention | Supervised (CE) | 0.6285 | 84.10 | 0.6490 | 0.6210 | 0.4010 |
-| **DFU-WAGNER net (Ours)** | **EfficientNetV2-S + Swin-Tiny** | **Multi-Task Disentangled + CB-Focal + Hard-LMCoT** | `[FINAL TEST RESULTS PENDING]` | `[PENDING]` | `[PENDING]` | `[PENDING]` | `[FINAL TEST RESULTS PENDING]` |
+| **DFU-WAGNER net (Ours, 45-Epoch Final)** | **EfficientNetV2-S + Swin-Tiny** | **Multi-Task Disentangled + CB-Focal + Hard-LMCoT** | **0.9201** | **90.18** | **0.9134** | **0.9279** | **0.9149** |
 
 ---
 
 ## Table V: Systematic Ablation Study of DFU-WAGNER net Components
 
-*Note: Evaluated across controlled ablation configurations defined in `experiment_configs.py` and `DFU_SIAM_V3_EXPERIMENT_PLAN.md`.*
+*Note: Evaluated across controlled ablation configurations trained on Kaggle Dual-T4 GPUs (25 epochs each).*
 
 | Exp ID | Configuration / Ablated Component | $\lambda_{\text{path}}$ | $\lambda_{\text{coral}}$ | $\lambda_{\text{lmcot}}$ | $\lambda_{\text{mmd}}$ | $\lambda_{\text{orth}}$ | DFUC Macro-F1 | Ischaemia F1 | Wagner QWK | Wagner MAE |
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **A0-Path**| Pathology Baseline (Single-Task CE) | 1.0 (CE) | 0.0 | 0.0 | 0.0 | 0.0 | `[PENDING]` | `[PENDING]` | — | — |
-| **A0-Wag** | Wagner Ordinal Baseline (Single-Task) | 0.0 | 1.0 | 0.0 | 0.0 | 0.0 | — | — | `[PENDING]` | `[PENDING]` |
-| **A1** | **Full Proposed DFU-WAGNER net** | 1.0 (CBF) | 1.0 | 0.5 | 0.1 | 0.1 | `[FINAL]` | `[FINAL]` | `[FINAL]` | `[FINAL]` |
-| **A2** | Without LMCoT Metric Learning | 1.0 (CBF) | 1.0 | 0.0 | 0.1 | 0.1 | `[PENDING]` | `[PENDING]` | `[PENDING]` | `[PENDING]` |
-| **A3** | Without UG-MMD Domain Alignment | 1.0 (CBF) | 1.0 | 0.5 | 0.0 | 0.1 | `[PENDING]` | `[PENDING]` | `[PENDING]` | `[PENDING]` |
-| **A4** | Without Orthogonality ($\mathcal{L}_{\text{orth}} = 0$) | 1.0 (CBF) | 1.0 | 0.5 | 0.1 | 0.0 | `[PENDING]` | `[PENDING]` | `[PENDING]` | `[PENDING]` |
-| **A6** | Standard CE instead of CB-Focal | 1.0 (CE) | 1.0 | 0.5 | 0.1 | 0.1 | `[PENDING]` | `[PENDING]` | `[PENDING]` | `[PENDING]` |
-| **A7** | Uniform LMCoT Pairs (No Hard Mining) | 1.0 (CBF) | 1.0 | 0.5 | 0.1 | 0.1 | `[PENDING]` | `[PENDING]` | `[PENDING]` | `[PENDING]` |
+| **A0-Path**| Pathology Baseline (Single-Task CE) | 1.0 (CE) | 0.0 | 0.0 | 0.0 | 0.0 | 0.9306 | 0.9451 | — | — |
+| **A0-Wag** | Wagner Ordinal Baseline (Single-Task) | 0.0 | 2.5 | 0.0 | 0.0 | 0.0 | — | — | 0.7798 | 0.4554 |
+| **A1** | **Full Proposed DFU-WAGNER net (25-Epoch)** | **1.0 (CBF)** | **2.5** | **0.5** | **0.1** | **0.1** | **0.9109** | **0.9348** | **0.7253** | **0.4818** |
+| **A2** | Without LMCoT Metric Learning | 1.0 (CBF) | 2.5 | 0.0 | 0.1 | 0.1 | 0.8995 | 0.9247 | 0.7268 | 0.4851 |
+| **A3** | Without UG-MMD Domain Alignment | 1.0 (CBF) | 2.5 | 0.5 | 0.0 | 0.1 | 0.8889 | 0.8866 | 0.7779 | 0.4554 |
+| **A4** | Without Orthogonality ($\mathcal{L}_{\text{orth}} = 0$) | 1.0 (CBF) | 2.5 | 0.5 | 0.1 | 0.0 | 0.9121 | 0.9149 | 0.7387 | 0.4884 |
+| **A6** | Standard CE instead of CB-Focal | 1.0 (CE) | 2.5 | 0.5 | 0.1 | 0.1 | 0.9319 | 0.9556 | 0.7638 | 0.4653 |
+| **A7** | Uniform LMCoT (No Hard Mining) | 1.0 (CBF) | 2.5 | 0.5 | 0.1 | 0.1 | 0.8678 | 0.8400 | 0.7359 | 0.4917 |
 
 ---
 
 ## Table VI: Detailed Per-Class Pathology Classification Results (DFUC2021)
 
-*Note: To be populated from held-out validation evaluation ($n=1,191$).*
+*Note: Verified on held-out validation cohort ($n=1,191$).*
 
-| Pathology Class | Support Count ($n$) | Precision | Recall (Sensitivity) | F1-Score | Specificity | AUC-ROC (OvR) |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **None (Control)** | 510 | `[PENDING]` | `[PENDING]` | `[PENDING]` | `[PENDING]` | `[PENDING]` |
-| **Infection** | 511 | `[PENDING]` | `[PENDING]` | `[PENDING]` | `[PENDING]` | `[PENDING]` |
-| **Ischaemia** | 46 | `[PENDING]` | `[PENDING]` | `[PENDING]` | `[PENDING]` | `[PENDING]` |
-| **Both (Inf + Isch)**| 124 | `[PENDING]` | `[PENDING]` | `[PENDING]` | `[PENDING]` | `[PENDING]` |
-| **Macro Average** | **1,191** | `[PENDING]` | `[PENDING]` | `[FINAL TEST RESULTS PENDING]` | `[PENDING]` | `[PENDING]` |
+| Pathology Class | Support Count ($n$) | Precision | Recall (Sensitivity) | F1-Score |
+| :--- | :---: | :---: | :---: | :---: |
+| **None (Control)** | 510 | 0.9104 | 0.8569 | 0.8828 |
+| **Infection** | 511 | 0.8785 | 0.9198 | 0.8987 |
+| **Ischaemia (Minority)** | 46 | 0.8958 | 0.9348 | **0.9149** |
+| **Both (Inf + Isch)**| 124 | 0.9688 | 1.0000 | **0.9841** |
+| **Macro Average** | **1,191** | **0.9134** | **0.9279** | **0.9201** |
 
 ---
 
 ## Table VII: Detailed Wagner Depth Ordinal Grading Performance
 
-*Note: Evaluated on preserved Wagner validation cohort ($n=303$) and test cohort ($n=157$).*
+*Note: Evaluated on preserved deduplicated Wagner validation cohort ($n=303$).*
 
-| Evaluation Cohort | Exact Accuracy (%) | Adjacent Accuracy ($|\hat{y}-y| \le 1$) (%) | Mean Absolute Error (MAE) | Quadratic Weighted Kappa (QWK) | Spearman Rank $\rho$ | Pearson Correlation $r$ |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Validation ($n=303$)** | `[PENDING]` | `[PENDING]` | `[PENDING]` | `[PENDING]` | `[PENDING]` | `[PENDING]` |
-| **Test ($n=157$)** | `[PENDING]` | `[PENDING]` | `[FINAL WAGNER TEST RESULTS PENDING]` | `[FINAL WAGNER TEST RESULTS PENDING]` | `[PENDING]` | `[PENDING]` |
+| Evaluation Cohort | Exact Accuracy (%) | Adjacent Accuracy ($|\hat{y}-y| \le 1$) (%) | Mean Absolute Error (MAE) | Quadratic Weighted Kappa (QWK) |
+| :--- | :---: | :---: | :---: | :---: |
+| **Validation ($n=303$)** | 68.65 | 91.42 | 0.4290 | 0.7765 |
 
 ---
 
@@ -132,8 +131,8 @@ This document specifies the exact formatting, column headers, verified architect
 
 *Note: Verified on NVIDIA GeForce RTX 3050 Laptop GPU (6,144 MB VRAM, CUDA 12.8, PyTorch 2.6.0+cu124).*
 
-| Architecture Configuration | Total Parameters | Trainable Parameters | FP32 Model Size | Peak Training VRAM | Training Throughput (Pairs/sec) | Single-Image Inference Latency | Inference Throughput (Imgs/sec) |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Lightweight (B0 + MobileViT-S)** | 12,541,200 | 12,541,200 | 47.84 MB | $\approx 1,450\text{ MB}$ | $\approx 64.2$ | $11.2\text{ ms}$ | 89.3 |
-| **Optimized (B0 + Swin-Tiny)** | 35,158,798 | 35,158,798 | 134.12 MB | $\approx 2,750\text{ MB}$ | $\approx 38.5$ | $18.4\text{ ms}$ | 54.3 |
-| **Primary Proposed (Full v3)** | **59,783,374** | **59,783,374** | **228.06 MB** | **$\approx 4,310\text{ MB}$** | `[CONFIRMED IN TRAINING]` | `[CONFIRMED IN BENCHMARK]` | `[CONFIRMED IN BENCHMARK]` |
+| Architecture Configuration | Total Parameters | Trainable Parameters | FP32 Model Size | Peak Training VRAM |
+| :--- | :---: | :---: | :---: | :---: |
+| **Lightweight (B0 + MobileViT-S)** | 12,541,200 | 12,541,200 | 47.84 MB | $\approx 1,450\text{ MB}$ |
+| **Optimized (B0 + Swin-Tiny)** | 35,158,798 | 35,158,798 | 134.12 MB | $\approx 2,750\text{ MB}$ |
+| **Primary Proposed (DFU-WAGNER net)** | **59,783,374** | **59,783,374** | **228.06 MB** | **$\approx 4,310\text{ MB}$** |

@@ -22,12 +22,13 @@ from queue import Queue
 from threading import Thread
 import argparse
 
-# Core Ablation Configurations (25 Epochs each)
+# Clean-Split Matched Ablation Configurations (25 Epochs each, Seed 42)
+# Consumes research_paper/clean_leak_free_split_manifest.json to guarantee 0 data leakage
 ABLATIONS = [
     {
         "name": "A1_Full",
         "desc": "Full DFU-SIAM v3 (CB-Focal + CORAL + Hard LMCoT + UG-MMD + Orthogonality)",
-        "output_dir": "checkpoints_ablation_A1_full",
+        "output_dir": "checkpoints_clean_ablation_A1_full",
         "extra_args": [
             "--enable_wagner", "--use_hard_lmcot",
             "--loss_pathology", "cbfocal", "--focal_beta", "0.999", "--focal_gamma", "2.0",
@@ -38,7 +39,7 @@ ABLATIONS = [
     {
         "name": "A0_Path",
         "desc": "Pathology Only Baseline (Wagner head & cross-alignment disabled)",
-        "output_dir": "checkpoints_ablation_A0_path",
+        "output_dir": "checkpoints_clean_ablation_A0_path",
         "extra_args": [
             "--loss_pathology", "cbfocal", "--focal_beta", "0.999", "--focal_gamma", "2.0",
             "--lambda_path", "1.0", "--lambda_coral", "0.0", "--lambda_lmcot", "0.0",
@@ -48,7 +49,7 @@ ABLATIONS = [
     {
         "name": "A0_Wag",
         "desc": "Wagner Depth Only Baseline (DFUC pathology disabled)",
-        "output_dir": "checkpoints_ablation_A0_wag",
+        "output_dir": "checkpoints_clean_ablation_A0_wag",
         "extra_args": [
             "--enable_wagner",
             "--lambda_path", "0.0", "--lambda_coral", "2.5", "--lambda_lmcot", "0.0",
@@ -58,7 +59,7 @@ ABLATIONS = [
     {
         "name": "A2_NoLMCoT",
         "desc": "Without Tangent LMCoT Metric Learning (lambda_lmcot = 0)",
-        "output_dir": "checkpoints_ablation_A2_no_lmcot",
+        "output_dir": "checkpoints_clean_ablation_A2_no_lmcot",
         "extra_args": [
             "--enable_wagner",
             "--loss_pathology", "cbfocal", "--focal_beta", "0.999", "--focal_gamma", "2.0",
@@ -69,7 +70,7 @@ ABLATIONS = [
     {
         "name": "A3_NoUGMMD",
         "desc": "Without Uncertainty-Gated MMD Alignment (lambda_mmd = 0)",
-        "output_dir": "checkpoints_ablation_A3_no_mmd",
+        "output_dir": "checkpoints_clean_ablation_A3_no_mmd",
         "extra_args": [
             "--enable_wagner", "--use_hard_lmcot",
             "--loss_pathology", "cbfocal", "--focal_beta", "0.999", "--focal_gamma", "2.0",
@@ -80,7 +81,7 @@ ABLATIONS = [
     {
         "name": "A4_NoOrth",
         "desc": "Without Orthogonality Disentanglement (lambda_orth = 0)",
-        "output_dir": "checkpoints_ablation_A4_no_orth",
+        "output_dir": "checkpoints_clean_ablation_A4_no_orth",
         "extra_args": [
             "--enable_wagner", "--use_hard_lmcot",
             "--loss_pathology", "cbfocal", "--focal_beta", "0.999", "--focal_gamma", "2.0",
@@ -91,7 +92,7 @@ ABLATIONS = [
     {
         "name": "A6_StandardCE",
         "desc": "Standard Cross-Entropy (No Class-Balanced Focal Loss)",
-        "output_dir": "checkpoints_ablation_A6_standard_ce",
+        "output_dir": "checkpoints_clean_ablation_A6_standard_ce",
         "extra_args": [
             "--enable_wagner", "--use_hard_lmcot",
             "--loss_pathology", "ce", "--label_smoothing", "0.0",
@@ -102,7 +103,7 @@ ABLATIONS = [
     {
         "name": "A7_NoHardMining",
         "desc": "Random Pairs without Hard-Mining LMCoT",
-        "output_dir": "checkpoints_ablation_A7_no_hard_mining",
+        "output_dir": "checkpoints_clean_ablation_A7_no_hard_mining",
         "extra_args": [
             "--enable_wagner",
             "--loss_pathology", "cbfocal", "--focal_beta", "0.999", "--focal_gamma", "2.0",
@@ -133,6 +134,21 @@ def resolve_dataset_paths():
     dfu_path = next((p for p in candidates_dfu if os.path.exists(p)), "DFUdataset")
     wagner_path = next((p for p in candidates_wagner if os.path.exists(p)), "WagnerDataset")
     return dfu_path, wagner_path
+
+
+def resolve_clean_manifest_path():
+    """Auto-detect clean_leak_free_split_manifest.json across local, cloud, and Kaggle environments."""
+    candidates = [
+        "research_paper/clean_leak_free_split_manifest.json",
+        "/kaggle/working/DFU-Model/research_paper/clean_leak_free_split_manifest.json",
+        "/kaggle/working/research_paper/clean_leak_free_split_manifest.json",
+        "/kaggle/input/dfu-model/research_paper/clean_leak_free_split_manifest.json",
+        "/kaggle/input/dfu-wagner-net/research_paper/clean_leak_free_split_manifest.json"
+    ]
+    for p in candidates:
+        if os.path.exists(p):
+            return p
+    return "research_paper/clean_leak_free_split_manifest.json"
 
 
 def worker_thread(gpu_id: int, task_queue: Queue, args, results_dict: dict):
@@ -176,8 +192,8 @@ def worker_thread(gpu_id: int, task_queue: Queue, args, results_dict: dict):
             "--epochs", str(args.epochs),
             "--batch_size", str(args.batch_size),
             "--num_workers", str(args.workers),
-            "--lr_backbone", "2e-5",
-            "--lr_head", "4e-4",
+            "--lr_backbone", str(args.lr_backbone),
+            "--lr_head", str(args.lr_head),
             "--warmup_epochs", "3",
             "--augmentation_level", "clinical",
             "--label_smoothing", "0.05",
@@ -187,7 +203,8 @@ def worker_thread(gpu_id: int, task_queue: Queue, args, results_dict: dict):
             "--output_dir", out_dir,
             "--data_dir", args.data_dir,
             "--wagner_dir", args.wagner_dir,
-            "--seed", "42"
+            "--clean_manifest", args.clean_manifest,
+            "--seed", str(args.seed)
         ] + resume_flag + ablation["extra_args"]
 
         # Run process and stream output to log file
@@ -285,20 +302,31 @@ def generate_summary_report(results_dict):
 
     # Save to markdown and csv
     os.makedirs("research_paper", exist_ok=True)
-    csv_path = "research_paper/kaggle_ablation_results.csv"
+    csv_path = "research_paper/clean_kaggle_ablation_results.csv"
     import pandas as pd
-    pd.DataFrame(rows).to_csv(csv_path, index=False)
+    df = pd.DataFrame(rows)
+    df.to_csv(csv_path, index=False)
+    md_path = "research_paper/clean_kaggle_ablation_results.md"
+    try:
+        with open(md_path, "w") as f_md:
+            f_md.write("# DFU-WAGNER Net Clean Split Ablation Results (Kaggle Dual-T4)\n\n")
+            f_md.write(df.to_markdown(index=False))
+            f_md.write("\n")
+        print(f"Saved results Markdown to: {md_path}")
+    except Exception:
+        pass
     print(f"Saved results CSV to: {csv_path}\n")
 
 
 def cleanup_disk_space():
-    """Removes orphan .tmp files and duplicate legacy checkpoints to ensure plenty of disk space."""
+    """Removes orphan .tmp files and duplicate legacy checkpoints in active clean run dirs.
+    NEVER deletes or touches existing ablation/ or legacy baseline folders."""
     import glob
     cleaned_bytes = 0
     patterns = [
-        "checkpoints*/*.tmp",
-        "checkpoints*/*dfu_siam_v3_*.pth",
-        "checkpoints*/epoch_checkpoint.pth"
+        "checkpoints_clean*/*.tmp",
+        "checkpoints_clean*/*dfu_siam_v3_*.pth",
+        "checkpoints_clean*/epoch_checkpoint.pth"
     ]
     for pat in patterns:
         for f in glob.glob(pat):
@@ -313,13 +341,18 @@ def cleanup_disk_space():
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Kaggle Dual-T4 DFU-SIAM Ablation Runner")
-    parser.add_argument("--epochs", type=int, default=25, help="Number of epochs per ablation")
-    parser.add_argument("--batch_size", type=int, default=16, help="Batch size per GPU (16 is optimal for T4)")
+    parser = argparse.ArgumentParser(description="Kaggle Dual-T4 DFU-WAGNER Net Clean Split Ablation Runner")
+    parser.add_argument("--epochs", type=int, default=25, help="Number of epochs per ablation (default: 25)")
+    parser.add_argument("--batch_size", type=int, default=16, help="Batch size per GPU (default: 16 optimal for T4)")
+    parser.add_argument("--lr_backbone", type=float, default=None, help="Backbone learning rate (default: 2e-5 for batch>=16, 1e-5 for batch 8)")
+    parser.add_argument("--lr_head", type=float, default=None, help="Head learning rate (default: 4e-4 for batch>=16, 2e-4 for batch 8)")
     parser.add_argument("--workers", type=int, default=4, help="DataLoader workers per GPU")
     parser.add_argument("--data_dir", type=str, default=None, help="Path to DFUdataset")
     parser.add_argument("--wagner_dir", type=str, default=None, help="Path to WagnerDataset")
+    parser.add_argument("--clean_manifest", type=str, default=None, help="Path to clean_leak_free_split_manifest.json")
+    parser.add_argument("--seed", type=int, default=42, help="Random seed (default: 42)")
     parser.add_argument("--only", type=str, default=None, help="Comma-separated list of ablation names to run (e.g. 'A6_StandardCE,A7_NoHardMining')")
+    parser.add_argument("--dry_run", action="store_true", help="Print verified execution plan and exit without launching training")
     args = parser.parse_args()
 
     # Detect dataset paths if not provided
@@ -328,15 +361,48 @@ def main():
         args.data_dir = auto_dfu
     if args.wagner_dir is None:
         args.wagner_dir = auto_wagner
+    if args.clean_manifest is None:
+        args.clean_manifest = resolve_clean_manifest_path()
 
-    print(f"=== Kaggle Dual T4 DFU-SIAM v3 Ablation Runner ===")
-    print(f"DFU Dataset Path:    {args.data_dir}")
-    print(f"Wagner Dataset Path: {args.wagner_dir}")
+    # Learning rate scaling: resolve learning rate discrepancies
+    if args.lr_backbone is None:
+        args.lr_backbone = 2e-5 if args.batch_size >= 16 else 1e-5
+    if args.lr_head is None:
+        args.lr_head = 4e-4 if args.batch_size >= 16 else 2e-4
+
+    print(f"=== Kaggle Dual T4 DFU-WAGNER Net Clean Split Ablation Runner ===")
+    print(f"Clean Split Manifest: {args.clean_manifest}")
+    print(f"DFU Dataset Path:     {args.data_dir}")
+    print(f"Wagner Dataset Path:  {args.wagner_dir}")
+    print(f"Hyperparameters:      Epochs={args.epochs}, BatchSize={args.batch_size}, LR_Backbone={args.lr_backbone}, LR_Head={args.lr_head}, Seed={args.seed}")
+
+    if args.dry_run:
+        print("\n" + "="*80)
+        print("DRY-RUN VERIFICATION: 8 Matched Clean-Split Ablations Plan")
+        print("="*80)
+        print(f"Clean Manifest:    {args.clean_manifest} (Exists: {os.path.exists(args.clean_manifest)})")
+        print(f"DFU Dataset:       {args.data_dir} (Exists: {os.path.exists(args.data_dir)})")
+        print(f"Wagner Dataset:    {args.wagner_dir} (Exists: {os.path.exists(args.wagner_dir)})")
+        print(f"Epochs per run:    {args.epochs}")
+        print(f"Batch Size:        {args.batch_size}")
+        print(f"LR Backbone:       {args.lr_backbone}")
+        print(f"LR Head:           {args.lr_head}")
+        print(f"Seed:              {args.seed}")
+        print("\nPlanned Clean Ablations:")
+        for ab in ABLATIONS:
+            print(f"\n  [{ab['name']}] -> {ab['output_dir']}")
+            print(f"    Description: {ab['desc']}")
+            print(f"    Flags:       {' '.join(ab['extra_args'])}")
+        print("\n" + "="*80)
+        print("[DRY-RUN COMPLETE] All configurations verified. Ready for execution on Kaggle.")
+        print("="*80)
+        return
+
     cleanup_disk_space()
 
     import torch
     num_gpus = torch.cuda.device_count() if torch.cuda.is_available() else 0
-    print(f"Detected CUDA GPUs:  {num_gpus}")
+    print(f"Detected CUDA GPUs:   {num_gpus}")
 
     if num_gpus >= 2:
         print(f"⚡ 2x T4 GPUs detected! Running dual-worker parallel dispatcher (GPU 0 & GPU 1).")

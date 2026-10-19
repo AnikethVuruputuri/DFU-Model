@@ -49,9 +49,12 @@ def evaluate_wagner_ordinal(model, dataloader, device, ordinal_loss_fn):
     adj_acc = np.mean(np.abs(all_preds - all_targets) <= 1)
     mean_loss = total_loss / max(1, num_batches)
     
-    from sklearn.metrics import f1_score, cohen_kappa_score
+    from sklearn.metrics import f1_score, cohen_kappa_score, confusion_matrix
     macro_f1 = f1_score(all_targets, all_preds, average='macro', zero_division=0)
     qwk = cohen_kappa_score(all_targets, all_preds, weights='quadratic')
+    cm = confusion_matrix(all_targets, all_preds, labels=list(range(5)))
+    per_grade_f1 = f1_score(all_targets, all_preds, average=None, labels=list(range(5)), zero_division=0)
+    grade_names = [f"Grade {g}" for g in range(5)]
 
     return {
         'accuracy': float(acc),
@@ -59,7 +62,9 @@ def evaluate_wagner_ordinal(model, dataloader, device, ordinal_loss_fn):
         'adjacent_accuracy': float(adj_acc),
         'macro_f1': float(macro_f1),
         'quadratic_weighted_kappa': float(qwk),
-        'loss': float(mean_loss)
+        'loss': float(mean_loss),
+        'per_grade_f1': {g: float(f) for g, f in zip(grade_names, per_grade_f1)},
+        'confusion_matrix': cm.tolist()
     }
 
 

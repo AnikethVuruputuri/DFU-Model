@@ -13,12 +13,15 @@ ENV/
 *.pt
 *.bin
 *.tmp
+*.zip
 checkpoints*/*.pth
 checkpoints*/*.tmp
+ablation/*/*.zip
 
-# Temporary and log files
+# Temporary, scratch and log files
 *.log
 outputs/temp*
+scratch/
 
 # IDE & OS
 .DS_Store
