@@ -325,6 +325,15 @@ def train_dfu_siam(args):
 
         interleaved_train_loader = InterleavedDataLoader(train_pair_loader, wagner_train_loader, mode='paired_step')
         print(f"Wagner Dataset loaded: {len(wagner_train_ds)} train samples, {len(wagner_val_ds)} val samples.")
+    elif args.wagner_dir and os.path.exists(args.wagner_dir):
+        # Wagner training is disabled (e.g. Pathology-only A0_Path baseline)
+        # Load evaluation sets to verify zero cross-dataset leakage into DFU training
+        wagner_val_dir = os.path.join(args.wagner_dir, "valid")
+        wagner_test_dir = os.path.join(args.wagner_dir, "test")
+        if os.path.exists(wagner_val_dir):
+            wagner_val_ds = WagnerSingleDataset(wagner_val_dir, clean_manifest=clean_manifest_path)
+        if os.path.exists(wagner_test_dir):
+            wagner_te_ds = WagnerSingleDataset(wagner_test_dir, clean_manifest=clean_manifest_path)
 
     # Mandatory Pre-Training Cryptographic Leakage Assertion
     leakage_report = None
@@ -332,9 +341,9 @@ def train_dfu_siam(args):
         leakage_report = assert_pre_training_leakage_free(
             dfu_train_dataset=train_pair_dataset,
             dfu_val_dataset=val_single_dataset,
-            wagner_train_dataset=wagner_train_ds if args.enable_wagner else None,
-            wagner_val_dataset=wagner_val_ds if args.enable_wagner else None,
-            wagner_test_dataset=wagner_te_ds if args.enable_wagner else None,
+            wagner_train_dataset=wagner_train_ds,
+            wagner_val_dataset=wagner_val_ds,
+            wagner_test_dataset=wagner_te_ds,
             clean_manifest_path=clean_manifest_path
         )
 

@@ -370,7 +370,35 @@ class WagnerSingleDataset(Dataset):
         self.excluded_paths = set()
         self.excluded_basenames = set()
         
-        is_training_dir = "train" in os.path.normpath(data_dir).lower().split(os.sep)
+        # Cross-platform check: check if loading training split
+        normalized_data_dir = data_dir.replace('\\', '/').lower()
+        is_training_dir = "train" in normalized_data_dir.split('/')
+
+        # Resolve candidate locations for exclude_manifest
+        if exclude_manifest and not os.path.exists(exclude_manifest):
+            candidates_dedup = [
+                os.path.join(os.path.dirname(__file__), "wagner_dedup_manifest.json"),
+                "wagner_dedup_manifest.json",
+                "/kaggle/working/DFU-Model/wagner_dedup_manifest.json",
+                "/kaggle/working/wagner_dedup_manifest.json"
+            ]
+            for c in candidates_dedup:
+                if os.path.exists(c):
+                    exclude_manifest = c
+                    break
+
+        # Resolve candidate locations for clean_manifest
+        if clean_manifest and not os.path.exists(clean_manifest):
+            candidates_clean = [
+                os.path.join(os.path.dirname(__file__), "research_paper", "clean_leak_free_split_manifest.json"),
+                "research_paper/clean_leak_free_split_manifest.json",
+                "/kaggle/working/DFU-Model/research_paper/clean_leak_free_split_manifest.json",
+                "/kaggle/working/research_paper/clean_leak_free_split_manifest.json"
+            ]
+            for c in candidates_clean:
+                if os.path.exists(c):
+                    clean_manifest = c
+                    break
 
         # 1. Internal Wagner deduplication exclusions (148 images)
         if exclude_manifest and os.path.exists(exclude_manifest):
@@ -380,9 +408,10 @@ class WagnerSingleDataset(Dataset):
                     manifest = json.load(f)
                 for item in manifest.get('exact_duplicates', []) + manifest.get('augmented_variants', []):
                     if 'train_path' in item:
-                        norm_p = os.path.normpath(item['train_path']).lower()
-                        self.excluded_paths.add(norm_p)
-                        self.excluded_basenames.add(os.path.basename(norm_p))
+                        raw_p = item['train_path']
+                        clean_base = raw_p.replace('\\', '/').split('/')[-1].lower()
+                        self.excluded_basenames.add(clean_base)
+                        self.excluded_paths.add(raw_p.replace('\\', '/').lower())
             except Exception as e:
                 print(f"[Warning] Failed to load exclude_manifest {exclude_manifest}: {e}")
 
@@ -393,9 +422,9 @@ class WagnerSingleDataset(Dataset):
                 with open(clean_manifest, 'r') as f:
                     cmanifest = json.load(f)
                 for rel_p in cmanifest.get('wagner_train_cross_exclusions', []):
-                    norm_p = os.path.normpath(rel_p).lower()
-                    self.excluded_paths.add(norm_p)
-                    self.excluded_basenames.add(os.path.basename(norm_p))
+                    clean_base = rel_p.replace('\\', '/').split('/')[-1].lower()
+                    self.excluded_basenames.add(clean_base)
+                    self.excluded_paths.add(rel_p.replace('\\', '/').lower())
             except Exception as e:
                 print(f"[Warning] Failed to load clean_manifest {clean_manifest}: {e}")
 
@@ -410,8 +439,8 @@ class WagnerSingleDataset(Dataset):
                 for fname in os.listdir(grade_dir):
                     if fname.lower().endswith(('.jpg', '.jpeg', '.png')):
                         full_path = os.path.join(grade_dir, fname)
-                        norm_full = os.path.normpath(full_path).lower()
-                        if fname.lower() in self.excluded_basenames or norm_full in self.excluded_paths:
+                        full_path_clean = full_path.replace('\\', '/').lower()
+                        if fname.lower() in self.excluded_basenames or full_path_clean in self.excluded_paths:
                             continue
                         self.img_paths.append(full_path)
                         self.labels.append(label)
