@@ -170,6 +170,14 @@ def worker_thread(gpu_id: int, task_queue: Queue, args, results_dict: dict):
         curves_file = os.path.join(out_dir, "learning_curves.json")
         if os.path.isfile(best_ckpt) and os.path.isfile(curves_file):
             print(f"[GPU {gpu_id}] [SKIP] {name} is already finished! Checkpoint verified.")
+            # Purge lingering intermediate checkpoints to conserve Kaggle disk quota
+            for non_best in ["latest_checkpoint.pth", "epoch_checkpoint.pth", "dfu_siam_v3_last.pth"]:
+                p_non_best = os.path.join(out_dir, non_best)
+                if os.path.isfile(p_non_best):
+                    try:
+                        os.remove(p_non_best)
+                    except OSError:
+                        pass
             results_dict[name] = {"status": "COMPLETED", "gpu": gpu_id, "out_dir": out_dir}
             task_queue.task_done()
             continue
@@ -184,7 +192,7 @@ def worker_thread(gpu_id: int, task_queue: Queue, args, results_dict: dict):
         else:
             print(f"[GPU {gpu_id}] [START] Starting fresh run for {name} ({ablation['desc']})...")
 
-        # Build command
+        # Build command: --save_only_best ensures strictly only best_checkpoint.pth is retained
         cmd = [
             sys.executable, "train_dfu_siam.py",
             "--arch", "full",
@@ -200,6 +208,7 @@ def worker_thread(gpu_id: int, task_queue: Queue, args, results_dict: dict):
             "--num_pairs_per_epoch", "6000",
             "--grad_clip", "1.0",
             "--checkpoint_every", "0",
+            "--save_only_best",
             "--output_dir", out_dir,
             "--data_dir", args.data_dir,
             "--wagner_dir", args.wagner_dir,
@@ -236,6 +245,15 @@ def worker_thread(gpu_id: int, task_queue: Queue, args, results_dict: dict):
         elapsed_mins = (time.time() - start_t) / 60.0
         if p.returncode == 0:
             print(f"✅ [GPU {gpu_id}] {name} COMPLETED in {elapsed_mins:.1f} mins!")
+            # Strictly purge intermediate and latest checkpoints to respect Kaggle's 20GB limit
+            for non_best in ["latest_checkpoint.pth", "epoch_checkpoint.pth", "dfu_siam_v3_last.pth"]:
+                p_non_best = os.path.join(out_dir, non_best)
+                if os.path.isfile(p_non_best):
+                    try:
+                        os.remove(p_non_best)
+                        print(f"🧹 [GPU {gpu_id}] Purged {non_best} for {name} (retaining only best_checkpoint.pth)")
+                    except OSError:
+                        pass
             results_dict[name] = {"status": "SUCCESS", "gpu": gpu_id, "out_dir": out_dir, "time_m": elapsed_mins}
         else:
             print(f"❌ [GPU {gpu_id}] {name} FAILED with exit code {p.returncode}! Log: {log_file}")
@@ -320,6 +338,7 @@ def generate_summary_report(results_dict):
 
 def cleanup_disk_space():
     """Removes orphan .tmp files and duplicate legacy checkpoints in active clean run dirs.
+    Strictly preserves best_checkpoint.pth and avoids exceeding Kaggle's 20GB disk limit.
     NEVER deletes or touches existing ablation/ or legacy baseline folders."""
     import glob
     cleaned_bytes = 0
@@ -336,8 +355,20 @@ def cleanup_disk_space():
                 cleaned_bytes += sz
             except OSError:
                 pass
+
+    # For latest_checkpoint.pth, remove if best_checkpoint.pth is already present in that folder
+    for f in glob.glob("checkpoints_clean*/latest_checkpoint.pth"):
+        folder = os.path.dirname(f)
+        if os.path.isfile(os.path.join(folder, "best_checkpoint.pth")):
+            try:
+                sz = os.path.getsize(f)
+                os.remove(f)
+                cleaned_bytes += sz
+            except OSError:
+                pass
+
     if cleaned_bytes > 0:
-        print(f"🧹 Cleaned {cleaned_bytes / (1024**2):.1f} MB of redundant temp/legacy files.")
+        print(f"🧹 Cleaned {cleaned_bytes / (1024**2):.1f} MB of redundant temp/intermediate files. Only best_checkpoint.pth retained.")
 
 
 def main():

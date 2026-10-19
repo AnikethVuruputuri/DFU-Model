@@ -61,7 +61,8 @@ Distributes all 8 experiments across GPU 0 and GPU 1 automatically:
 ```
 - **Total Runtime**: ~4.5 to 5.0 hours on Dual T4 (2x speedup).
 - **Auto-resumption**: If the notebook times out or is restarted, re-running the exact same command resumes from the latest completed epoch automatically.
-- **Disk Safety**: Checkpoints are stored in dedicated directories (`checkpoints_clean_ablation_*`), preserving all previous preliminary results.
+- **Disk Safety & 20GB Limit**: `--save_only_best` is active by default. Intermediate checkpoints (`latest_checkpoint.pth`, `epoch_checkpoint.pth`) are purged upon run completion, retaining strictly `best_checkpoint.pth` and `learning_curves.json` (~720MB per ablation $\times$ 8 = ~5.7GB total). This leaves >14GB of free headroom on Kaggle's 20GB disk quota!
+- **Artifact Isolation**: Clean checkpoints are stored in dedicated directories (`checkpoints_clean_ablation_*`), preserving all previous preliminary results without collision.
 
 ### Running a Specific Ablation
 If you wish to run only one or two ablations at a time:

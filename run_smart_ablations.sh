@@ -48,6 +48,7 @@ run_ablation() {
       --grad_clip 1.0 \
       --output_dir "$DIR" \
       --clean_manifest "$CLEAN_MANIFEST" \
+      --save_only_best \
       --seed 42 \
       $RESUME_FLAG \
       $EXTRA_ARGS

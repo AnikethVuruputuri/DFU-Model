@@ -953,7 +953,18 @@ def train_dfu_siam(args):
     if not interrupted['flag']:
         print(f"\n=== Training Complete in {total_duration/60:.2f} minutes ===")
         print(f"Best Validation {args.monitor_metric}: {best_monitored_metric:.4f}")
-        print(f"Saved Checkpoints: {best_model_path}, {latest_model_path}")
+        if getattr(args, 'save_only_best', False):
+            # Clean up all non-best checkpoints to enforce storage limit (e.g. Kaggle 20GB limit)
+            for non_best in [latest_model_path, epoch_model_path, legacy_last_path]:
+                if os.path.isfile(non_best):
+                    try:
+                        os.remove(non_best)
+                        print(f"🧹 Removed non-best checkpoint to conserve disk: {os.path.basename(non_best)}")
+                    except OSError:
+                        pass
+            print(f"Saved Checkpoint: {best_model_path} (Only best_checkpoint.pth retained for disk quota)")
+        else:
+            print(f"Saved Checkpoints: {best_model_path}, {latest_model_path}")
     else:
         print(f"\n=== Training Gracefully Halted in {total_duration/60:.2f} minutes ===")
         print(f"Latest Resumable Checkpoint Saved to: {latest_model_path}")
@@ -972,6 +983,7 @@ if __name__ == "__main__":
     parser.add_argument("--checkpoint_every", type=int, default=100, help="Save latest_checkpoint.pth every N training steps (0 to disable mid-epoch saving)")
     parser.add_argument("--save_every_epoch", action="store_true", default=True, help="Save epoch_checkpoint.pth at the end of each completed epoch")
     parser.add_argument("--keep_all_epochs", action="store_true", help="Save distinct epoch_{epoch}.pth checkpoints in addition to epoch_checkpoint.pth")
+    parser.add_argument("--save_only_best", action="store_true", help="Purge intermediate/latest checkpoints upon completion to strictly preserve disk space (e.g. Kaggle 20GB limit)")
     parser.add_argument("--enable_wagner", action="store_true", help="Enable Wagner dataset joint ordinal training & alignment")
 
     # Architecture Configuration
