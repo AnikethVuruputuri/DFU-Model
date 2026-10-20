@@ -88,18 +88,18 @@ This document specifies the exact formatting, column headers, verified architect
 
 ## Table V: Systematic Ablation Study of DFU-WAGNER net Components
 
-*Note: Evaluated across controlled ablation configurations trained on Kaggle Dual-T4 GPUs (25 epochs each).*
+*Note: Evaluated across controlled ablation configurations trained on Kaggle Dual-T4 GPUs (25 epochs each, leak-free split manifest).*
 
-| Exp ID | Configuration / Ablated Component | $\lambda_{\text{path}}$ | $\lambda_{\text{coral}}$ | $\lambda_{\text{lmcot}}$ | $\lambda_{\text{mmd}}$ | $\lambda_{\text{orth}}$ | DFUC Macro-F1 | Ischaemia F1 | Wagner QWK | Wagner MAE |
+| Exp ID | Configuration / Ablated Component | $\lambda_{\text{path}}$ | $\lambda_{\text{coral}}$ | $\lambda_{\text{lmcot}}$ | $\lambda_{\text{mmd}}$ | $\lambda_{\text{orth}}$ | DFUC Macro-F1 | DFUC Accuracy | Wagner QWK | Wagner MAE |
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **A0-Path**| Pathology Baseline (Single-Task CE) | 1.0 (CE) | 0.0 | 0.0 | 0.0 | 0.0 | 0.9306 | 0.9451 | — | — |
-| **A0-Wag** | Wagner Ordinal Baseline (Single-Task) | 0.0 | 2.5 | 0.0 | 0.0 | 0.0 | — | — | 0.7798 | 0.4554 |
-| **A1** | **Full Proposed DFU-WAGNER net (25-Epoch)** | **1.0 (CBF)** | **2.5** | **0.5** | **0.1** | **0.1** | **0.9109** | **0.9348** | **0.7253** | **0.4818** |
-| **A2** | Without LMCoT Metric Learning | 1.0 (CBF) | 2.5 | 0.0 | 0.1 | 0.1 | 0.8995 | 0.9247 | 0.7268 | 0.4851 |
-| **A3** | Without UG-MMD Domain Alignment | 1.0 (CBF) | 2.5 | 0.5 | 0.0 | 0.1 | 0.8889 | 0.8866 | 0.7779 | 0.4554 |
-| **A4** | Without Orthogonality ($\mathcal{L}_{\text{orth}} = 0$) | 1.0 (CBF) | 2.5 | 0.5 | 0.1 | 0.0 | 0.9121 | 0.9149 | 0.7387 | 0.4884 |
-| **A6** | Standard CE instead of CB-Focal | 1.0 (CE) | 2.5 | 0.5 | 0.1 | 0.1 | 0.9319 | 0.9556 | 0.7638 | 0.4653 |
-| **A7** | Uniform LMCoT (No Hard Mining) | 1.0 (CBF) | 2.5 | 0.5 | 0.1 | 0.1 | 0.8678 | 0.8400 | 0.7359 | 0.4917 |
+| **A0-Path**| Pathology Baseline (Single-Task CBF) | 1.0 (CBF) | 0.0 | 0.0 | 0.0 | 0.0 | 0.9226 | 0.8959 | — | — |
+| **A0-Wag** | Wagner Ordinal Baseline (Single-Task) | 0.0 | 2.5 | 0.0 | 0.0 | 0.0 | — | — | 0.7834 | 0.4389 |
+| **A1** | **Full Proposed DFU-WAGNER net (25-Epoch)** | **1.0 (CBF)** | **2.5** | **0.5** | **0.1** | **0.1** | **0.9102** | **0.8883** | **0.7619** | **0.4653** |
+| **A2** | Without LMCoT Metric Learning | 1.0 (CBF) | 2.5 | 0.0 | 0.1 | 0.1 | 0.9058 | 0.8732 | 0.7404 | 0.4686 |
+| **A3** | Without UG-MMD Domain Alignment | 1.0 (CBF) | 2.5 | 0.5 | 0.0 | 0.1 | 0.9060 | 0.8799 | 0.7506 | 0.4554 |
+| **A4** | Without Orthogonality ($\mathcal{L}_{\text{orth}} = 0$) | 1.0 (CBF) | 2.5 | 0.5 | 0.1 | 0.0 | 0.9121 | 0.8866 | 0.7752 | 0.4488 |
+| **A6** | Standard CE instead of CB-Focal | 1.0 (CE) | 2.5 | 0.5 | 0.1 | 0.1 | 0.9265 | 0.9060 | 0.7558 | 0.4851 |
+| **A7** | Uniform LMCoT (No Hard Mining) | 1.0 (CBF) | 2.5 | 0.5 | 0.1 | 0.1 | 0.8941 | 0.8623 | 0.7462 | 0.5017 |
 
 ---
 

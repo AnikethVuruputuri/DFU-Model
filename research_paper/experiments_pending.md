@@ -19,14 +19,14 @@
 
 | Experiment ID | Configuration Name | Status | Output Directory / Log | Monitored Metric | Target Table / Figure in Manuscript |
 | :---: | :--- | :---: | :--- | :---: | :---: |
-| **A1-Primary** | **Full Proposed DFU-WAGNER net (Seed 42)** | **Training / Evaluation Pipeline** | `checkpoints_a1_full_balanced/` | Joint / Macro-F1 | Table IV, Table VI, Table VII, Fig 4, 5, 6 |
-| **A0-Path** | Pathology-Only Supervised Baseline | Pending Execution | `checkpoints_a0_path/` | Macro-F1 | Table V (Ablation) |
-| **A0-Wag** | Wagner-Only Ordinal Baseline | Pilot Verified / Full Run | `checkpoints_a0_wagner/` | QWK / MAE | Table V (Ablation), Table VII |
-| **A2** | No LMCoT Metric Learning ($\lambda_{\text{lmcot}}=0$) | Pending Execution | `checkpoints_a2_no_lmcot/` | Macro-F1 | Table V (Ablation) |
-| **A3** | No UG-MMD Alignment ($\lambda_{\text{mmd}}=0$) | Pending Execution | `checkpoints_a3_no_mmd/` | Macro-F1 | Table V (Ablation) |
-| **A4** | No Orthogonality Regularization ($\lambda_{\text{orth}}=0$) | Pending Execution | `checkpoints_a4_no_orth/` | Macro-F1 | Table V (Ablation) |
-| **A6** | Standard CE instead of CB-Focal | Pending Execution | `checkpoints_a6_ce/` | Ischaemia F1 | Table V (Ablation) |
-| **A7** | Uniform LMCoT Pairs (No Hard Mining) | Pending Execution | `checkpoints_a7_uniform_lmcot/` | Macro-F1 | Table V (Ablation) |
+| **A1-Primary** | **Full Proposed DFU-WAGNER net (Seed 42)** | **COMPLETED (Kaggle Dual-T4)** | `logs/A1_Full.log` | Joint / Macro-F1 | Table IV, Table VI, Table VII, Fig 4, 5, 6 |
+| **A0-Path** | Pathology-Only Supervised Baseline | **COMPLETED (Kaggle Dual-T4)** | `logs/A0_Path.log` | Macro-F1 | Table V (Ablation) |
+| **A0-Wag** | Wagner-Only Ordinal Baseline | **COMPLETED (Kaggle Dual-T4)** | `logs/A0_Wag.log` | QWK / MAE | Table V (Ablation), Table VII |
+| **A2** | No LMCoT Metric Learning ($\lambda_{\text{lmcot}}=0$) | **COMPLETED (Kaggle Dual-T4)** | `logs/A2_NoLMCoT.log` | Macro-F1 | Table V (Ablation) |
+| **A3** | No UG-MMD Alignment ($\lambda_{\text{mmd}}=0$) | **COMPLETED (Kaggle Dual-T4)** | `logs/A3_NoUGMMD.log` | Macro-F1 | Table V (Ablation) |
+| **A4** | No Orthogonality Regularization ($\lambda_{\text{orth}}=0$) | **COMPLETED (Kaggle Dual-T4)** | `logs/A4_NoOrth.log` | Macro-F1 | Table V (Ablation) |
+| **A6** | Standard CE instead of CB-Focal | **COMPLETED (Kaggle Dual-T4)** | `logs/A6_StandardCE.log` | Macro-F1 / Accuracy | Table V (Ablation) |
+| **A7** | Uniform LMCoT Pairs (No Hard Mining) | **COMPLETED (Kaggle Dual-T4)** | `logs/A7_NoHardMining.log` | Macro-F1 | Table V (Ablation) |
 | **Seed Runs** | Multi-Seed Reproducibility (Seeds 123, 2026) | Pending Execution | `checkpoints_v3_seed123/`, `...2026/` | Mean $\pm$ Std | Table IV (Final Confidence Intervals) |
 | **XAI-GradCAM**| Multi-Branch Grad-CAM Visualizations | Pending Generation | `output_cam_v3/` | Qualitative Attribution | Figure 7 |
 

@@ -1,0 +1,9 @@
+Experiment_ID,Configuration,lambda_path,lambda_coral,lambda_lmcot,lambda_mmd,lambda_orth,Macro_F1,Accuracy,Wagner_QWK,Wagner_MAE,Description
+A1_Full,Full DFU-SIAM v3,1.0 (CBF),2.5,0.5,0.1,0.1,0.9102,0.8883,0.7619,0.4653,Full DFU-SIAM v3 (CB-Focal + CORAL + Hard LMCoT + UG-MMD + Orthogonality)
+A0_Path,Pathology Baseline,1.0 (CBF),0.0,0.0,0.0,0.0,0.9226,0.8959,N/A,N/A,Pathology Only Baseline (Wagner head & cross-alignment disabled)
+A0_Wag,Wagner Baseline,0.0,2.5,0.0,0.0,0.0,N/A,N/A,0.7834,0.4389,Wagner Depth Only Baseline (DFUC pathology disabled)
+A2_NoLMCoT,Without LMCoT,1.0 (CBF),2.5,0.0,0.1,0.1,0.9058,0.8732,0.7404,0.4686,Without Tangent LMCoT Metric Learning (lambda_lmcot = 0)
+A3_NoUGMMD,Without UG-MMD,1.0 (CBF),2.5,0.5,0.0,0.1,0.9060,0.8799,0.7506,0.4554,Without Uncertainty-Gated MMD Alignment (lambda_mmd = 0)
+A4_NoOrth,Without Orthogonality,1.0 (CBF),2.5,0.5,0.1,0.0,0.9121,0.8866,0.7752,0.4488,Without Orthogonality Disentanglement (lambda_orth = 0)
+A6_StandardCE,Standard CE,1.0 (CE),2.5,0.5,0.1,0.1,0.9265,0.9060,0.7558,0.4851,Standard Cross-Entropy (No Class-Balanced Focal Loss)
+A7_NoHardMining,Uniform LMCoT,1.0 (CBF),2.5,0.5,0.1,0.1,0.8941,0.8623,0.7462,0.5017,Random Pairs without Hard-Mining LMCoT

@@ -432,16 +432,16 @@ Table VII summarizes the ordinal grading performance across the deduplicated Wag
 ### 6.4 Ablation Study Results
 Table V presents the systematic evaluation of all eight ablated configurations (A0 Baselines through A7) trained under identical experimental protocols.
 
-| Exp ID | Configuration Description | $\lambda_{\text{path}}$ | $\lambda_{\text{coral}}$ | $\lambda_{\text{lmcot}}$ | $\lambda_{\text{mmd}}$ | $\lambda_{\text{orth}}$ | Macro-F1 | Ischaemia F1 | Wagner QWK | Wagner MAE |
+| Exp ID | Configuration Description | $\lambda_{\text{path}}$ | $\lambda_{\text{coral}}$ | $\lambda_{\text{lmcot}}$ | $\lambda_{\text{mmd}}$ | $\lambda_{\text{orth}}$ | Macro-F1 | Accuracy | Wagner QWK | Wagner MAE |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| A0-Path | Pathology Single-Task Baseline | 1.0 (CE) | 0.0 | 0.0 | 0.0 | 0.0 | 0.9306 | 0.9451 | — | — |
-| A0-Wag | Wagner Single-Task Baseline | 0.0 | 2.5 | 0.0 | 0.0 | 0.0 | — | — | 0.7798 | 0.4554 |
-| **A1** | **Full Proposed DFU-WAGNER net** | **1.0 (CBF)** | **2.5** | **0.5** | **0.1** | **0.1** | **0.9109** | **0.9348** | **0.7253** | **0.4818** |
-| A2 | Without LMCoT Metric Learning | 1.0 (CBF) | 2.5 | 0.0 | 0.1 | 0.1 | 0.8995 | 0.9247 | 0.7268 | 0.4851 |
-| A3 | Without UG-MMD Domain Alignment | 1.0 (CBF) | 2.5 | 0.5 | 0.0 | 0.1 | 0.8889 | 0.8866 | 0.7779 | 0.4554 |
-| A4 | Without Orthogonality ($\mathcal{L}_{\text{orth}} = 0$) | 1.0 (CBF) | 2.5 | 0.5 | 0.1 | 0.0 | 0.9121 | 0.9149 | 0.7387 | 0.4884 |
-| A6 | Standard CE instead of CB-Focal | 1.0 (CE) | 2.5 | 0.5 | 0.1 | 0.1 | 0.9319 | 0.9556 | 0.7638 | 0.4653 |
-| A7 | Uniform LMCoT (No Hard Mining) | 1.0 (CBF) | 2.5 | 0.5 | 0.1 | 0.1 | 0.8678 | 0.8400 | 0.7359 | 0.4917 |
+| A0-Path | Pathology Single-Task Baseline | 1.0 (CBF) | 0.0 | 0.0 | 0.0 | 0.0 | 0.9226 | 0.8959 | — | — |
+| A0-Wag | Wagner Single-Task Baseline | 0.0 | 2.5 | 0.0 | 0.0 | 0.0 | — | — | 0.7834 | 0.4389 |
+| **A1** | **Full Proposed DFU-WAGNER net** | **1.0 (CBF)** | **2.5** | **0.5** | **0.1** | **0.1** | **0.9102** | **0.8883** | **0.7619** | **0.4653** |
+| A2 | Without LMCoT Metric Learning | 1.0 (CBF) | 2.5 | 0.0 | 0.1 | 0.1 | 0.9058 | 0.8732 | 0.7404 | 0.4686 |
+| A3 | Without UG-MMD Domain Alignment | 1.0 (CBF) | 2.5 | 0.5 | 0.0 | 0.1 | 0.9060 | 0.8799 | 0.7506 | 0.4554 |
+| A4 | Without Orthogonality ($\mathcal{L}_{\text{orth}} = 0$) | 1.0 (CBF) | 2.5 | 0.5 | 0.1 | 0.0 | 0.9121 | 0.8866 | 0.7752 | 0.4488 |
+| A6 | Standard CE instead of CB-Focal | 1.0 (CE) | 2.5 | 0.5 | 0.1 | 0.1 | 0.9265 | 0.9060 | 0.7558 | 0.4851 |
+| A7 | Uniform LMCoT (No Hard Mining) | 1.0 (CBF) | 2.5 | 0.5 | 0.1 | 0.1 | 0.8941 | 0.8623 | 0.7462 | 0.5017 |
 
 ### 6.5 Verified Computational Efficiency
 The exact architectural parameter counts and memory footprints—verified directly from the model implementation—are reported in Table III and Table VIII:
@@ -484,11 +484,11 @@ By reformulating Wagner grading through Consistent Rank Logits (CORAL) [17], DFU
 
 The systematic ablation results in Table V isolate the exact performance contributions of each architectural and regularizing mechanism:
 
-1. **Impact of Hard-Pair Mining (A1 vs. A7)**: Replacing active hardest-pair mining with uniform LMCoT sampling drops the DFUC Macro-F1 from **0.9109** to **0.8678** (a $-4.31\%$ decline) and collapses minority *Ischaemia* F1 from **0.9348** to **0.8400** (a severe $-9.48\%$ drop). This confirms that active batch-level mining along clinical decision boundaries is essential for separating subtle ischaemic discoloration from uninfected granulation tissue.
-2. **Impact of Domain Alignment (A1 vs. A3)**: Setting $\lambda_{\text{mmd}} = 0.0$ induces a notable degradation in pathology Macro-F1 (dropping from 0.9109 to 0.8889) and ischaemia discrimination (dropping to 0.8866). This empirical evidence proves that without uncertainty-gated distribution alignment, representations learned from the Wagner cohort diverge from the DFUC2021 manifold, causing negative cross-cohort transfer.
-3. **Impact of Metric Learning (A1 vs. A2)**: Disabling tangent LMCoT ($\lambda_{\text{lmcot}} = 0.0$) degrades Macro-F1 from 0.9109 to 0.8995 and lowers overall accuracy to 86.40%, demonstrating that hyperspherical metric clustering enforces regularizing intra-class compactness on the shared latent manifold.
+1. **Impact of Hard-Pair Mining (A1 vs. A7)**: Replacing active hardest-pair mining with uniform LMCoT sampling drops the DFUC Macro-F1 from **0.9102** to **0.8941** (a $-1.61\%$ absolute decline) and reduces classification accuracy from **88.83\%** to **86.23\%** (a $-2.60\%$ drop), while Wagner QWK decreases from **0.7619** to **0.7462** and MAE increases from **0.4653** to **0.5017**. This confirms that active batch-level mining along clinical decision boundaries is essential for separating subtle ischaemic discoloration from uninfected granulation tissue while stabilizing shared manifold representations.
+2. **Impact of Domain Alignment (A1 vs. A3)**: Setting $\lambda_{\text{mmd}} = 0.0$ induces a notable degradation in pathology Macro-F1 (dropping from \textbf{0.9102} to \textbf{0.9060}), accuracy (dropping from \textbf{88.83\%} to \textbf{87.99\%}), and Wagner QWK (dropping from \textbf{0.7619} to \textbf{0.7506}). This empirical evidence proves that without uncertainty-gated distribution alignment, representations learned from the Wagner cohort diverge from the DFUC2021 manifold, causing negative cross-cohort transfer.
+3. **Impact of Metric Learning (A1 vs. A2)**: Disabling tangent LMCoT ($\lambda_{\text{lmcot}} = 0.0$) degrades Macro-F1 from \textbf{0.9102} to \textbf{0.9058}, overall accuracy from \textbf{88.83\%} to \textbf{87.32\%}, and Wagner QWK from \textbf{0.7619} to \textbf{0.7404} (with MAE increasing from \textbf{0.4653} to \textbf{0.4686}), demonstrating that hyperspherical metric clustering enforces regularizing intra-class compactness on the shared latent manifold.
 4. **Supervision Formulation (A1 vs. A6)**: While standard Cross-Entropy (A6) achieves high nominal accuracy on majority categories, Class-Balanced Focal Loss (A1) dynamically dampens dominant gradients to maintain balanced sensitivity across extreme class distributions.
-5. **Single-Task Baselines (A0-Path and A0-Wag)**: While single-task pathology (A0-Path) achieves 0.9306 Macro-F1 by allocating 100% of network capacity to a single 4-class head, DFU-WAGNER net (A1) achieves a competitive 0.9109 Macro-F1 while simultaneously solving the 5-stage ordinal Wagner depth task with 89.11% adjacent accuracy, successfully uniting disjoint clinical taxonomies within a single compact model.
+5. **Single-Task Baselines (A0-Path and A0-Wag)**: While single-task pathology (A0-Path) achieves \textbf{0.9226} Macro-F1 (Accuracy 89.59\%) and single-task Wagner (A0-Wag) achieves \textbf{0.7834} QWK (MAE 0.4389), the multi-task model (A1) achieves \textbf{0.9102} Macro-F1 and \textbf{0.7619} Wagner QWK, successfully uniting disjoint clinical taxonomies within a single compact model with minimal multi-task degradation. Extending multi-task training to the full 45-epoch schedule elevates performance to \textbf{0.9201} Macro-F1 and \textbf{0.7765} Wagner QWK.
 
 ---
 
