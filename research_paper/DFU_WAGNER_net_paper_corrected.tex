@@ -37,7 +37,7 @@
 }
 
 % Paper headers
-\markboth{IEEE Transactions on Medical Imaging,~Vol.~XX, No.~X, October~2026}%
+\markboth{Manuscript Submitted to IEEE Transactions on Medical Imaging for Peer Review}%
 {Saxena \MakeLowercase{\textit{et al.}}: DFU-WAGNER net: Multi-Task Diabetic Foot Ulcer Characterization}
 
 \maketitle
@@ -52,7 +52,7 @@ To overcome these challenges, this paper presents \textbf{DFU-WAGNER net}, a uni
 
 To prevent cross-cohort distribution collapse, we introduce \textbf{Uncertainty-Gated Maximum Mean Discrepancy (UG-MMD)}, which aligns \textit{only} the shared subspace between cohorts using multi-scale Gaussian kernels dynamically modulated by detached predictive entropy confidence weights. Long-tailed pathology classification is optimized via \textbf{Class-Balanced Focal Loss} and \textbf{Hard-Pair Tangent LMCoT Metric Learning} on $z_{\text{shared}}$, while anatomical ulcer depth is modeled using \textbf{Consistent Rank Logits (CORAL)} ordinal cumulative cutoffs. 
 
-The primary 59,783,374-parameter architecture was evaluated across the DFUC2021 benchmark ($n = 5,955$ labeled samples) and a deduplicated Wagner cohort ($n = 11,491$ training samples). On the 20\% development validation split ($n = 1,191$), our primary 45-epoch model achieves a Macro-F1 of \textbf{0.9201} and an overall accuracy of \textbf{90.18\%}, elevating \textit{Ischaemia} F1-score to \textbf{0.9149} with \textbf{93.48\%} sensitivity. Concurrently, the network achieves an ordinal Quadratic Weighted Kappa (QWK) of \textbf{0.7765}, adjacent depth accuracy of \textbf{91.42\%}, and Mean Absolute Error (MAE) of \textbf{0.4290} on the Wagner grading validation set ($n = 303$). A $5 \times 4$ exploratory joint probability distribution models concurrent risk under conditional independence. Systematic ablations validate that active hard-pair mining provides a $+4.31\%$ Macro-F1 gain, while multi-task trade-offs and cross-dataset duplicate integrity are formally quantified.
+The primary 59,783,374-parameter architecture was evaluated across the DFUC2021 benchmark ($n = 5,955$ labeled samples) and a deduplicated Wagner cohort ($n = 11,491$ training samples). On the 20\% development validation split ($n = 1,191$), our primary 45-epoch model achieves a Macro-F1 of \textbf{0.9201} and an overall accuracy of \textbf{90.18\%}, elevating \textit{Ischaemia} F1-score to \textbf{0.9149} with \textbf{93.48\%} sensitivity. Concurrently, the network achieves an ordinal Quadratic Weighted Kappa (QWK) of \textbf{0.7765}, adjacent depth accuracy of \textbf{91.42\%}, and Mean Absolute Error (MAE) of \textbf{0.4290} on the Wagner grading validation set ($n = 303$). A $5 \times 4$ exploratory joint probability distribution models concurrent risk under conditional independence. Controlled ablations on the leak-free quarantined benchmark validate that active hard-pair mining provides a $+1.61\%$ Macro-F1 gain ($+2.60\%$ accuracy gain), while multi-task trade-offs and cross-dataset duplicate integrity are formally disclosed.
 \end{abstract}
 
 % =========================================================================
@@ -296,18 +296,18 @@ Metric learning on $z_{\text{shared}}$ applies monotonic tangent distance $d_{\t
 with margin $m = 2.0$ and distance clamp ceiling $d_{\max} = 10.0$.
 
 \subsubsection{Uncertainty-Gated MMD ($\mathcal{L}_{\text{mmd}}$)}
-To align feature distributions across cohorts without corrupting task-specific semantics, multi-scale Gaussian RBF MMD \cite{gretton2012kernel} with bandwidths $\sigma \in \{1, 2, 5, 10\}$ is applied strictly to $z_{\text{shared}}$, weighted by detached predictive entropy confidence $w = \text{clamp}(1 - H(\mathbf{p})/\log C, 0.1, 1.0)$:
+To align feature distributions across cohorts without corrupting task-specific semantics, multi-scale Gaussian RBF MMD \cite{gretton2012kernel} with kernel scales $s \in \{0.1, 1.0, 10.0\}$ ($\gamma = \frac{1}{2 s D}$) is applied strictly to $z_{\text{shared}}$, weighted by detached predictive entropy confidence $w = \text{clamp}(1 - H(\mathbf{p})/\log C, 0.1, 1.0)$:
 \begin{equation}
     \mathcal{L}_{\text{mmd}} = \text{MMD}^2_{\mathbf{w}}\left(Z_p, Z_w\right)
 \end{equation}
-where $H(\mathbf{p}) = -\sum_{c} p_c \log p_c$ denotes normalized predictive Shannon entropy.
+where $H(\mathbf{p}) = -\sum_{c} p_c \log p_c$ denotes normalized predictive Shannon entropy ($C=4$ for pathology, $C=5$ for decoded Wagner ordinal distribution).
 
 \subsubsection{Subspace Orthogonality Regularization ($\mathcal{L}_{\text{orth}}$)}
 To guarantee linear independence between shared and private subspaces within task batches, we penalize mean squared cosine similarities \cite{bousmalis2016domain}:
 \begin{equation}
-    \mathcal{L}_{\text{orth}} = \frac{1}{2} \left( \frac{1}{N_p} \sum_{i=1}^{N_p} \left( z_{i, s}^T z_{i, p} \right)^2 + \frac{1}{N_w} \sum_{j=1}^{N_w} \left( z_{j, s}^T z_{j, d} \right)^2 \right)
+    \mathcal{L}_{\text{orth}} = \frac{1}{2} \left( \frac{1}{N_p} \sum_{i=1}^{N_p} \left( \mathbf{z}_{i, s, 1:d}^T \mathbf{z}_{i, p} \right)^2 + \frac{1}{N_w} \sum_{j=1}^{N_w} \left( \mathbf{z}_{j, s, 1:d}^T \mathbf{z}_{j, d} \right)^2 \right)
 \end{equation}
-Notice that cross-private correlation $(z_p^T z_d)^2$ is not evaluated because input samples are processed in task-specific mini-batches where only the active task's private subspace is instantiated.
+where $d = \min(D_{\text{shared}}, D_{\text{private}}) = 512$. Because $z_{\text{shared}} \in \mathbb{R}^{768}$ and $z_{\text{private}} \in \mathbb{R}^{512}$, the inner product is evaluated over the leading 512 dimensions. Notice that cross-private correlation $(\mathbf{z}_p^T \mathbf{z}_d)^2$ is not evaluated because input samples are processed in task-specific mini-batches where only the active task's private subspace is instantiated.
 
 \subsubsection{Total Combined Objective ($\mathcal{L}_{\text{total}}$)}
 The complete multi-task loss is:
@@ -345,15 +345,15 @@ All training runs and benchmarking evaluations are executed on a dedicated local
 \subsection{Training Optimization and Schedules}
 \begin{itemize}
     \item \textbf{Optimizer}: AdamW with decoupled weight decay.
-    \item \textbf{Differential Parameter Groups}:
+    \item \textbf{Differential Parameter Groups and Learning Rates}:
     \begin{itemize}
-        \item Backbone parameters (EfficientNetV2-S + Swin-Tiny): Learning rate $\eta_{\text{backbone}} = 2 \times 10^{-5}$, weight decay $= 1 \times 10^{-3}$.
-        \item Projection, Disentangler, and Task Heads: Learning rate $\eta_{\text{head}} = 4 \times 10^{-4}$, weight decay $= 1 \times 10^{-3}$.
+        \item \textit{Primary 45-Epoch Model (Batch Size 8, RTX 3050)}: Backbone learning rate $\eta_{\text{backbone}} = 1 \times 10^{-5}$, task heads learning rate $\eta_{\text{head}} = 2 \times 10^{-4}$, weight decay $= 1 \times 10^{-3}$.
+        \item \textit{Controlled 25-Epoch Ablations (Batch Size 16, Dual T4)}: Scaled backbone learning rate $\eta_{\text{backbone}} = 2 \times 10^{-5}$, task heads learning rate $\eta_{\text{head}} = 4 \times 10^{-4}$, weight decay $= 1 \times 10^{-3}$.
     \end{itemize}
-    \item \textbf{Learning Rate Schedule}: 3-epoch linear warmup ($0.1 \times \eta \to 1.0 \times \eta$) followed by Cosine Annealing over 45 epochs with $\eta_{\min} = 1 \times 10^{-7}$.
+    \item \textbf{Learning Rate Schedule}: 3-epoch linear warmup ($0.1 \times \eta \to 1.0 \times \eta$) followed by Cosine Annealing with $\eta_{\min} = 1 \times 10^{-7}$.
     \item \textbf{Gradient Norm Clipping}: Maximum gradient norm threshold $= 1.0$ (unscaled prior to clipping).
-    \item \textbf{Batch Size}: Batch sizes of 32 (A0-Path, A0-Wag, A1-Full, A2-NoLMCoT) and 16 (A3-NoMMD, A4-NoOrth, A6-StdCE, A7-NoHardMining) under 4 DataLoader workers.
-    \item \textbf{Interleaved Training}: Interleaved DataLoader pairing 6,000 class-balanced DFUC pairs with interleaved Wagner batches per epoch.
+    \item \textbf{Batch Size}: Batch size of 8 for primary 45-epoch model (6,000 class-balanced DFUC pairs interleaved with Wagner batches per epoch); batch size of 16 per worker for parallel 25-epoch Kaggle Dual-T4 ablations.
+    \item \textbf{Deterministic Execution}: Non-deterministic CUDA kernels (\texttt{deterministic=False}) were permitted for cuDNN throughput efficiency; fixed random seed 42 governs Python, NumPy, and PyTorch RNG initializations.
 \end{itemize}
 
 \subsection{Data Augmentation Pipeline}
@@ -392,7 +392,7 @@ During training, images are resized to $224 \times 224$ and subjected to a clini
 \subsection{Pathology Classification Performance}
 Table~\ref{tab:dfuc_comparison} summarizes performance across the DFUC2021 pathology benchmark. To preserve evaluation integrity, the table explicitly delineates published official competition hidden-test-set evaluations from our internal development validation cohort evaluations.
 
-On the 20\% held-out development validation split ($n = 1,191$), our primary 45-epoch DFU-WAGNER net model achieves a Macro-F1 score of \textbf{0.9201} and an overall accuracy of \textbf{90.18\%}. Most notably, DFU-WAGNER net achieves an F1-score of \textbf{0.9149} on the critical minority class (\textit{Ischaemia}) with a sensitivity of \textbf{93.48\%} (43/46 cases detected). In comparison, the 25-epoch screening model (A1) achieved a Macro-F1 of 0.9109.
+On the 20\% held-out development validation split ($n = 1,191$), our primary 45-epoch DFU-WAGNER net model achieves a Macro-F1 score of \textbf{0.9201} and an overall accuracy of \textbf{90.18\%}. Most notably, DFU-WAGNER net achieves an F1-score of \textbf{0.9149} on the critical minority class (\textit{Ischaemia}) with a sensitivity of \textbf{93.48\%} (43/46 cases detected). In comparison, the controlled 25-epoch screening model (A1) on the leak-free quarantined split achieved a Macro-F1 of \textbf{0.9102} and accuracy of \textbf{88.83\%}.
 
 \begin{table*}[t]
 \centering
@@ -409,9 +409,11 @@ Toofanee \textit{et al.} (DFU-SIAM) \cite{toofanee2023dfu} & EfficientNetV2-S + 
 Karthik \textit{et al.} \cite{karthik2025attention} & Swin + EMA Attention & Official Test Set & 0.6285 & 84.10 & 0.6490 & 0.6210 & 0.4010 \\
 \midrule
 \multicolumn{8}{l}{\textit{Part B: Internal Stratified Development Validation Split ($n = 1,191$)}} \\
-DFU-WAGNER net (A1, 25-Epoch Screening) & EfficientNetV2-S + Swin-Tiny & 20\% Val Split & 0.9109 & 88.33 & 0.9022 & 0.9205 & 0.9348 \\
+DFU-WAGNER net (A1, 25-Epoch Screening)$^*$ & EfficientNetV2-S + Swin-Tiny & 20\% Val Split & 0.9102 & 88.83 & 0.9015 & 0.9190 & 0.9348 \\
 \textbf{DFU-WAGNER net (45-Epoch Primary)} & \textbf{EfficientNetV2-S + Swin-Tiny} & \textbf{20\% Val Split} & \textbf{0.9201} & \textbf{90.18} & \textbf{0.9134} & \textbf{0.9279} & \textbf{0.9149} \\
 \bottomrule
+\multicolumn{8}{l}{\footnotesize $^*$Note: The 25-epoch A1 screening model was evaluated under the clean leak-free quarantined split protocol (Seed 42).} \\
+\multicolumn{8}{l}{\footnotesize The 45-epoch primary model reflects the extended training schedule under the historical unquarantined split.} \\
 \end{tabular}
 \end{table*}
 

@@ -122,10 +122,10 @@ To ensure complete evaluation integrity:
 
 ### Phase 5: Ablation Study Verification and Multi-Task Trade-Offs
 
-All 8 ablation experiments in `ablation/` were systematically audited by inspecting `experiment_config.json` and `learning_curves.json`.
+The ablation campaign was audited across two sequential stages: the preliminary local 25-epoch screening run on the historical split, and the subsequent clean leak-free 25-epoch screening run executed on Kaggle Dual-T4 GPUs (`research_paper/clean_kaggle_ablation_results.csv`).
 
-#### 1. Verification of Table IV Values (Best Monitored Checkpoint)
-Every metric reported in Table IV matches the exact checkpoint saved during training by `train_dfu_siam.py` according to each run's `monitor_metric`:
+#### 1. Historical Preliminary Ablation Runs (Local Screening)
+Every metric reported in earlier preliminary logs matched the saved checkpoint from `train_dfu_siam.py` under the historical split:
 
 | Exp ID | Experiment Directory | Monitored Metric | Best Epoch | Paper Macro-F1 | Actual Macro-F1 | Paper Isch F1 | Actual Isch F1 | Paper QWK | Actual QWK | Paper MAE | Actual MAE |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -138,7 +138,21 @@ Every metric reported in Table IV matches the exact checkpoint saved during trai
 | **A6 Std CE** | `checkpoints_ablation_A6_standard_ce`| `joint` | 22 | 0.9319 | 0.9319 | 0.9556 | 0.9556 | 0.7638 | 0.7638 | 0.4653 | 0.4653 |
 | **A7 No Hard** | `checkpoints_ablation_A7_no_hard_mining`| `joint` | 22 | 0.8678 | 0.8678 | 0.8400 | 0.8400 | 0.7359 | 0.7359 | 0.4917 | 0.4917 |
 
-#### 2. Discrepancies and Clarifications Resolved:
+#### 2. Verified Clean Leak-Free Ablation Campaign (Kaggle Dual-T4, Seed 42)
+The final manuscript Table IV has been updated to reflect the leak-free quarantined split protocol (`research_paper/clean_leak_free_split_manifest.json`):
+
+| Exp ID | Configuration Description | $\lambda_{\text{path}}$ | $\lambda_{\text{coral}}$ | $\lambda_{\text{lmcot}}$ | $\lambda_{\text{mmd}}$ | $\lambda_{\text{orth}}$ | Macro-F1 | Accuracy | Wagner QWK | Wagner MAE |
+| :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **A1_Full** | Full Multi-Task Proposed Model | 1.0 (CBF) | 2.5 | 0.5 | 0.1 | 0.1 | **0.9102** | **0.8883** | **0.7619** | **0.4653** |
+| **A0_Path** | Pathology Single-Task Baseline | 1.0 (CBF) | 0.0 | 0.0 | 0.0 | 0.0 | **0.9226** | **0.8959** | --- | --- |
+| **A0_Wag** | Wagner Ordinal Single-Task Baseline | 0.0 | 2.5 | 0.0 | 0.0 | 0.0 | --- | --- | **0.7834** | **0.4389** |
+| **A2_NoLMCoT** | Without Tangent LMCoT Metric Loss | 1.0 (CBF) | 2.5 | 0.0 | 0.1 | 0.1 | **0.9058** | **0.8732** | **0.7404** | **0.4686** |
+| **A3_NoUGMMD** | Without Uncertainty-Gated MMD | 1.0 (CBF) | 2.5 | 0.5 | 0.0 | 0.1 | **0.9060** | **0.8799** | **0.7506** | **0.4554** |
+| **A4_NoOrth** | Without Orthogonality ($\mathcal{L}_{\text{orth}}=0$)$^*$ | 1.0 (CBF) | 2.5 | 0.5 | 0.1 | 0.0 | **0.9121** | **0.8866** | **0.7752** | **0.4488** |
+| **A6_StandardCE** | Standard CE instead of CB-Focal | 1.0 (CE) | 2.5 | 0.5 | 0.1 | 0.1 | **0.9265** | **0.9060** | **0.7558** | **0.4851** |
+| **A7_NoHardMining** | Uniform LMCoT (No Hard Mining) | 1.0 (CBF) | 2.5 | 0.5 | 0.1 | 0.1 | **0.8941** | **0.8623** | **0.7462** | **0.5017** |
+
+#### 3. Discrepancies and Clarifications Resolved:
 - **A0-Path Loss**: The old manuscript listed A0-Path as `1.0 (CE)`. The config confirms it was actually trained with `cbfocal`. This has been corrected in Table IV.
 - **A5 Missing Entry**: In `DFU_SIAM_V3_EXPERIMENT_PLAN.md` Section 4.1, A5 ("No Task Disentanglement") was operationalized via A4 ($\lambda_{\text{orth}}=0$) to avoid changing tensor dimensions. Table IV includes an explanatory footnote.
 - **Multi-Task Pareto Trade-Off**: Single-task A0-Path (0.9306) and standard CE multi-task A6 (0.9319) outperformed multi-task A1 (0.9109) in the 25-epoch screening run. The revised manuscript discusses this trade-off openly: multi-task training introduces cross-task gradient tension, but enables concurrent prediction of ordinal depth (89.11% adjacent accuracy). Extended 45-epoch training elevates the primary model to 0.9201 Macro-F1 and 0.7765 QWK.
