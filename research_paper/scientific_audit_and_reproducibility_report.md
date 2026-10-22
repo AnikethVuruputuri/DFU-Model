@@ -122,7 +122,9 @@ To ensure complete evaluation integrity:
 
 ### Phase 5: Ablation Study Verification and Multi-Task Trade-Offs
 
-The ablation campaign was audited across two sequential stages: the preliminary local 25-epoch screening run on the historical split, and the subsequent clean leak-free 25-epoch screening run executed on Kaggle Dual-T4 GPUs (`research_paper/clean_kaggle_ablation_results.csv`).
+The ablation campaign was audited across two sequential stages:
+1. **Historical Preliminary Ablation Runs (Local Screening)**: Executed on the historical unquarantined split (October 17, 2026).
+2. **Verified Clean Leak-Free Ablation Campaign (Kaggle Dual-T4, Seed 42)**: Executed consuming `research_paper/clean_leak_free_split_manifest.json` with pre-training leakage assertions verified in `leakage_guard.py`.
 
 #### 1. Historical Preliminary Ablation Runs (Local Screening)
 Every metric reported in earlier preliminary logs matched the saved checkpoint from `train_dfu_siam.py` under the historical split:
@@ -143,54 +145,75 @@ The final manuscript Table IV has been updated to reflect the leak-free quaranti
 
 | Exp ID | Configuration Description | $\lambda_{\text{path}}$ | $\lambda_{\text{coral}}$ | $\lambda_{\text{lmcot}}$ | $\lambda_{\text{mmd}}$ | $\lambda_{\text{orth}}$ | Macro-F1 | Accuracy | Wagner QWK | Wagner MAE |
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **A1_Full** | Full Multi-Task Proposed Model | 1.0 (CBF) | 2.5 | 0.5 | 0.1 | 0.1 | **0.9102** | **0.8883** | **0.7619** | **0.4653** |
+| **A1_Full** | **Full Multi-Task Proposed Model** | **1.0 (CBF)** | **2.5** | **0.5** | **0.1** | **0.1** | **0.9102** | **0.8883** | **0.7619** | **0.4653** |
 | **A0_Path** | Pathology Single-Task Baseline | 1.0 (CBF) | 0.0 | 0.0 | 0.0 | 0.0 | **0.9226** | **0.8959** | --- | --- |
 | **A0_Wag** | Wagner Ordinal Single-Task Baseline | 0.0 | 2.5 | 0.0 | 0.0 | 0.0 | --- | --- | **0.7834** | **0.4389** |
 | **A2_NoLMCoT** | Without Tangent LMCoT Metric Loss | 1.0 (CBF) | 2.5 | 0.0 | 0.1 | 0.1 | **0.9058** | **0.8732** | **0.7404** | **0.4686** |
 | **A3_NoUGMMD** | Without Uncertainty-Gated MMD | 1.0 (CBF) | 2.5 | 0.5 | 0.0 | 0.1 | **0.9060** | **0.8799** | **0.7506** | **0.4554** |
 | **A4_NoOrth** | Without Orthogonality ($\mathcal{L}_{\text{orth}}=0$)$^*$ | 1.0 (CBF) | 2.5 | 0.5 | 0.1 | 0.0 | **0.9121** | **0.8866** | **0.7752** | **0.4488** |
+| **A5_NoDisent**| Without Task Disentangler Module$^\dagger$ | 1.0 (CBF) | 2.5 | 0.5 | 0.1 | --- | \multicolumn{4}{c}{--- *Not Performed (Architectural Control)* ---} |
 | **A6_StandardCE** | Standard CE instead of CB-Focal | 1.0 (CE) | 2.5 | 0.5 | 0.1 | 0.1 | **0.9265** | **0.9060** | **0.7558** | **0.4851** |
 | **A7_NoHardMining** | Uniform LMCoT (No Hard Mining) | 1.0 (CBF) | 2.5 | 0.5 | 0.1 | 0.1 | **0.8941** | **0.8623** | **0.7462** | **0.5017** |
 
-#### 3. Discrepancies and Clarifications Resolved:
-- **A0-Path Loss**: The old manuscript listed A0-Path as `1.0 (CE)`. The config confirms it was actually trained with `cbfocal`. This has been corrected in Table IV.
-- **A5 Missing Entry**: In `DFU_SIAM_V3_EXPERIMENT_PLAN.md` Section 4.1, A5 ("No Task Disentanglement") was operationalized via A4 ($\lambda_{\text{orth}}=0$) to avoid changing tensor dimensions. Table IV includes an explanatory footnote.
-- **Multi-Task Pareto Trade-Off**: Single-task A0-Path (0.9306) and standard CE multi-task A6 (0.9319) outperformed multi-task A1 (0.9109) in the 25-epoch screening run. The revised manuscript discusses this trade-off openly: multi-task training introduces cross-task gradient tension, but enables concurrent prediction of ordinal depth (89.11% adjacent accuracy). Extended 45-epoch training elevates the primary model to 0.9201 Macro-F1 and 0.7765 QWK.
-- **Batch Size and Learning Rates**: The old manuscript claimed a batch size of 8, $\eta_{\text{backbone}} = 1\times 10^{-5}$, and $\eta_{\text{head}} = 2\times 10^{-4}$. Actual configs show batch size = 32 (A0, A1, A2) or 16 (A3, A4, A6, A7), $\eta_{\text{backbone}} = 2\times 10^{-5}$, and $\eta_{\text{head}} = 4\times 10^{-4}$. These parameters have been updated in Section V.
+#### 3. Second-Pass Discrepancies and Clarifications Resolved:
+1. **A5 Ablation Reality Check**:
+   - *Investigation*: Code inspection of `dfu_siam_model.py` and `run_kaggle_ablations_2x_t4.py` reveals that A4 only disables the orthogonality loss penalty ($\lambda_{\text{orth}} = 0$). In A4, the `TaskDisentangler` projection heads ($z_s, z_p, z_d$) and task routing remain 100% active.
+   - *Correction*: We have retracted the assertion that A5 was operationalized via A4. A genuine "No Disentanglement" model (feeding monolithic fused 2,560-D representations directly to classifier heads) was never trained because changing head input dimensions from 1,280-D to 2,560-D would confound architectural disentanglement with parameter scaling. A5 is now formally marked as **"Not Performed / Architectural Control"** across all manuscript tables and reports.
+2. **Clean-Split Provenance Verification**:
+   - *25-Epoch Clean Ablation Runs*: Verified that the Kaggle ablation script `run_kaggle_ablations_2x_t4.py` explicitly supplied `--clean_manifest research_paper/clean_leak_free_split_manifest.json` to `train_dfu_siam.py`, successfully asserted zero leakage via `leakage_guard.py`, and recorded `clean_manifest_hash` in run configurations. The reported A1 screening result (Macro-F1 0.9102, Accuracy 0.8883, QWK 0.7619, MAE 0.4653) is 100% clean-split verified.
+   - *45-Epoch Primary Model Run*: Verified that `checkpoints_a1_full_balanced/experiment_config.json` was generated on 2026-10-06 prior to the creation of `clean_leak_free_split_manifest.json` (2026-10-19). It reflects extended training (stopped at best epoch 36) on the historical unquarantined split (with internal Wagner dedup, but without cross-dataset clean manifest exclusions). The two protocols are now explicitly delineated in the manuscript.
+3. **Duplicate Counts and Counting Units Verification**:
+   - *Manifest Recomputation*: Recomputed and verified all numbers directly from the JSON manifests:
+     - **728**: Exact cross-dataset identical-image *pairs* (MD5 matches) between DFUC2021 and Wagner cohorts (`dataset_cross_overlap_manifest.json`).
+     - **257**: Cross-split colliding *pairs* (119 DFU val in Wagner train + 92 Wagner val in DFU train + 46 Wagner test in DFU train).
+     - **471**: Non-colliding image *pairs* (435 both-in-train, 21 both-in-validation, 15 DFU-val in Wagner-test).
+     - **138**: Unique *DFU training image files* quarantined from `DFUdataset/train` ($4,764 \to 4,626$).
+     - **120**: Unique *Wagner training image files* quarantined from `WagnerDataset/train` ($11,491 \to 11,371$).
+     - **148**: Unique *Wagner internal image files* excluded from raw Wagner train ($11,639 \to 11,491$; 37 base duplicate images + 111 Roboflow augmentations).
+   - *Unit Clarity*: The manuscript text now strictly distinguishes between pairs, unique files quarantined, and files excluded.
+4. **Experimental Comparability (Primary Model vs. Ablation Screening)**:
+   - Delineated protocol differences in Section V:
+     - Primary Model: Local RTX 3050 Laptop GPU (6GB VRAM), Windows 11, Batch Size 8 (750 steps/epoch), $\eta_{\text{backbone}}=1\times 10^{-5}$, $\eta_{\text{head}}=2\times 10^{-4}$, 45 epochs (best epoch 36), historical split.
+     - Ablation Study: Cloud Dual NVIDIA T4 GPUs, Ubuntu Linux, Batch Size 16 per worker (375 steps/epoch), scaled $\eta_{\text{backbone}}=2\times 10^{-5}$, $\eta_{\text{head}}=4\times 10^{-4}$, 25 epochs fixed budget, clean leak-free quarantined split.
+5. **Benchmark Citations and Table I Audit**:
+   - Official hidden test set results for DFUC2021 (Cassidy et al., Galdran et al., Toofanee et al.) are segregated into Part A.
+   - Karthik et al. (2025) was evaluated on an independent split in *Scientific Reports* (2025). Its bibliographic entry in `references.bib` has been updated with verified authors (R. Karthik, A. Ajay, A. Jhalani, K. S. Ballari, S. Suganthi) and title, and moved to Part B ("Published Literature on Independent DFUC Splits").
+6. **Honest Interpretation of Multi-Task Pareto Trade-Offs**:
+   - Single-task baselines (A0-Path Macro-F1 0.9226; A0-Wag QWK 0.7834) and Standard CE (A6 Macro-F1 0.9265) outperform multi-task A1 on isolated individual metrics due to the absence of cross-task gradient competition.
+   - Without orthogonality penalties ($\lambda_{\text{orth}}=0$, A4), features freely co-adapt and slightly elevate empirical screening metrics (Macro-F1 0.9121, QWK 0.7752), but sacrifice feature disentanglement and clinical explainability.
+   - The clinical value of A1 is providing unified, concurrent dual-axis predictions within a single 59.78M parameter architecture.
 
 ---
 
 ### Phase 6: Mathematical Formulations Audit
 
 1. **Loss Balancing Weights**:
-   - Equation in old paper stated $\boldsymbol{\lambda} = [1.0, 1.0, 0.5, 0.1, 0.1]$.
-   - Verified config values across all training scripts: $\lambda_{\text{path}} = 1.0$, $\lambda_{\text{coral}} = 2.5$, $\lambda_{\text{lmcot}} = 0.5$, $\lambda_{\text{mmd}} = 0.1$, $\lambda_{\text{orth}} = 0.1$.
-   - Corrected in equation and text to $\boldsymbol{\lambda} = [1.0, 2.5, 0.5, 0.1, 0.1]$.
+   - Confirmed config values: $\lambda_{\text{path}} = 1.0$, $\lambda_{\text{coral}} = 2.5$, $\lambda_{\text{lmcot}} = 0.5$, $\lambda_{\text{mmd}} = 0.1$, $\lambda_{\text{orth}} = 0.1$.
 2. **Subspace Orthogonality Regularization**:
    - The implementation computes:
      $$\mathcal{L}_{\text{orth}} = \frac{1}{2} \left( \frac{1}{N_p} \sum_{i=1}^{N_p} (z_{i, s}^T z_{i, p})^2 + \frac{1}{N_w} \sum_{j=1}^{N_w} (z_{j, s}^T z_{j, d})^2 \right)$$
-   - The text now clarifies that $(z_p^T z_d)^2$ is not computed because input samples are processed in task-specific mini-batches where only the active task's private subspace is instantiated.
+   - The text clarifies that $(z_p^T z_d)^2$ is not computed because samples are processed in task-specific mini-batches.
 3. **Uncertainty-Gated MMD**:
-   - Clarified multi-scale RBF bandwidths $\sigma \in \{1, 2, 5, 10\}$.
-   - Confirmed confidence weighting $w = \text{clamp}(1 - H(\mathbf{p})/\log C, 0.1, 1.0)$ using detached predictive entropy.
+   - Multi-scale RBF bandwidths $\sigma \in \{1, 2, 5, 10\}$ and confidence weighting $w = \text{clamp}(1 - H(\mathbf{p})/\log C, 0.1, 1.0)$ verified.
 4. **Hard-Pair Tangent LMCoT**:
-   - Verified that the monotonic tangent metric $d_{\tan}(z_i, z_j) = \tan(\frac{1}{2}\arccos(z_i^T z_j))$ with distance ceiling 10.0 and margin 2.0 correctly resolves the polarity singularity of the legacy cotangent formulation.
+   - Monotonic tangent metric $d_{\tan}(z_i, z_j) = \tan(\frac{1}{2}\arccos(z_i^T z_j))$ with distance ceiling 10.0 and margin 2.0 verified.
 
 ---
 
-### Phase 7: Complete Discrepancy Matrix
+### Phase 7: Complete Second-Pass Discrepancy Matrix
 
-| Item / Claim | Original Paper (`.tex`) | Verified Code / Data Reality | Severity | Corrected In (`_corrected.tex`) |
-| :--- | :--- | :--- | :--- | :--- |
-| **Cohorts Disjointness** | "$\mathcal{D}_{\text{path}}$ and $\mathcal{D}_{\text{wagner}}$ are completely disjoint cohorts ($x^p \ne x^w$)" | 728 exact MD5 duplicate matches across datasets due to web scraping | **Critical** | Disclosed cross-dataset overlap, documented 728 matches, added quarantine protocol |
-| **Clinical UT Matrix** | "Differentiable 16-Cell University of Texas Matrix Synthesis $M_{\text{UT}} \in \mathbb{R}^{4 \times 4}$" | Wagner has 5 grades, Pathology has 4 classes ($5\times 4=20$ cells). Wagner grades $\ne$ UT stages | **Critical** | Removed UT claim; reframed as exploratory $5\times 4$ joint bivariate distribution |
-| **Benchmark SOTA Claim** | "Surpassing MICCAI winning model by nearly 30 percentage points (0.9201 vs 0.6307)" | 0.6307 is on hidden test set; 0.9201 is on internal 20% validation split ($n=1,191$) | **High** | Delineated Part A (Hidden Test Set) and Part B (Internal Val Split) in Table I |
-| **Loss Balancing Weights** | $\boldsymbol{\lambda} = [1.0, 1.0, 0.5, 0.1, 0.1]$ | $\lambda_{\text{coral}} = 2.5$ in all configs ($\boldsymbol{\lambda} = [1.0, 2.5, 0.5, 0.1, 0.1]$) | **Medium** | Updated equation and text to $\lambda_{\text{coral}} = 2.5$ |
-| **Batch Size** | Mini-batch size of 8 | Batch size 32 (A0, A1, A2) or 16 (A3, A4, A6, A7) | **Medium** | Corrected Section V to state 32/16 batch sizes |
-| **Learning Rates** | $\eta_{\text{backbone}} = 1\times 10^{-5}$, $\eta_{\text{head}} = 2\times 10^{-4}$ | $\eta_{\text{backbone}} = 2\times 10^{-5}$, $\eta_{\text{head}} = 4\times 10^{-4}$ | **Medium** | Corrected Section V to match actual learning rates |
-| **A0-Path Loss in Table IV** | Listed as `1.0 (CE)` | Config shows `loss_pathology = "cbfocal"` | **Medium** | Corrected Table IV to `1.0 (CBF)` |
-| **A5 Missing Entry** | A5 missing from Table IV with no explanation | A5 ("No Disentanglement") was operationalized via A4 ($\lambda_{\text{orth}}=0$) in experiment plan | **Low** | Added explanatory footnote in Table IV |
-| **Hyperbolic Claims** | "Never under-triaged", "unprecedented", "autonomous triage" | Post-hoc models cannot guarantee zero under-triaging; no regulatory approval | **Medium** | Softened/removed all hyperbolic claims across all sections |
+| Item / Claim | Original Paper (`.tex`) | Verified Code / Data Reality | Severity | Corrected In (`_corrected.tex`) | Second-Pass Status |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Cohorts Disjointness** | "$\mathcal{D}_{\text{path}}$ and $\mathcal{D}_{\text{wagner}}$ are completely disjoint cohorts ($x^p \ne x^w$)" | 728 exact MD5 duplicate matches across datasets due to web scraping | **Critical** | Disclosed cross-dataset overlap, documented 728 matches, added quarantine protocol | **VERIFIED & RESOLVED** |
+| **Clinical UT Matrix** | "Differentiable 16-Cell University of Texas Matrix Synthesis $M_{\text{UT}} \in \mathbb{R}^{4 \times 4}$" | Wagner has 5 grades, Pathology has 4 classes ($5\times 4=20$ cells). Wagner grades $\ne$ UT stages | **Critical** | Removed UT claim; reframed as exploratory $5\times 4$ joint bivariate distribution | **VERIFIED & RESOLVED** |
+| **Benchmark SOTA Claim** | "Surpassing MICCAI winning model by nearly 30 percentage points (0.9201 vs 0.6307)" | 0.6307 is on hidden test set; 0.9201 is on internal 20% validation split ($n=1,191$) | **High** | Delineated Part A (Hidden Test Set), Part B (Independent Splits), Part C (Internal Val) | **VERIFIED & RESOLVED** |
+| **A5 Ablation Status** | Claimed A5 was operationalized via A4 ($\lambda_{\text{orth}}=0$) | A4 only disables loss penalty; TaskDisentangler is still fully active in A4. A5 was never run. | **High** | Retracted operationalization claim; Table IV explicitly marks A5 as Not Performed. | **VERIFIED & RESOLVED** |
+| **Clean-Split Provenance** | Historical 45-epoch model conflated with clean-split protocol | 45-epoch model was run on historical split; 25-epoch Kaggle ablations used clean manifest | **High** | Delineated historical 45-epoch run from clean 25-epoch screening run in text and tables | **VERIFIED & RESOLVED** |
+| **Duplicate Counting Units** | Conflated pairs, exclusions, and internal duplicates | 728 pairs, 257 colliding pairs, 138 DFU exclusions, 120 Wagner exclusions, 148 dedup files | **Medium** | Explicitly defined counting units and category breakdown in Section III-C | **VERIFIED & RESOLVED** |
+| **Experimental Comparability** | Ablations claimed identical to primary model | Primary run on RTX 3050 (BS 8, 45 epochs); ablations on Dual T4 (BS 16, 25 epochs) | **Medium** | Fully documented hardware, LR scaling, batch sizes, and budgets in Section V | **VERIFIED & RESOLVED** |
+| **Karthik et al. Citation** | Listed under official test set with placeholder authors | Published in *Sci. Rep.* 2025 on independent split; author list and title verified | **Medium** | Corrected `references.bib` entry and moved to independent split section in Table I | **VERIFIED & RESOLVED** |
+| **Ablation Interpretation** | Claimed full model outperformed all variants on all metrics | A0-Path (0.9226), A0-Wag (0.7834), A6 (0.9265), and A4 (0.9121) beat A1 on specific metrics | **Medium** | Added comprehensive discussion of multi-task Pareto trade-offs and gradient tension | **VERIFIED & RESOLVED** |
+| **Loss Balancing Weights** | $\boldsymbol{\lambda} = [1.0, 1.0, 0.5, 0.1, 0.1]$ | $\lambda_{\text{coral}} = 2.5$ in all configs ($\boldsymbol{\lambda} = [1.0, 2.5, 0.5, 0.1, 0.1]$) | **Medium** | Updated equation and text to $\lambda_{\text{coral}} = 2.5$ | **VERIFIED & RESOLVED** |
 
 ---
 

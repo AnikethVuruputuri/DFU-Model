@@ -439,9 +439,14 @@ Table V presents the systematic evaluation of all eight ablated configurations (
 | **A1** | **Full Proposed DFU-WAGNER net** | **1.0 (CBF)** | **2.5** | **0.5** | **0.1** | **0.1** | **0.9102** | **0.8883** | **0.7619** | **0.4653** |
 | A2 | Without LMCoT Metric Learning | 1.0 (CBF) | 2.5 | 0.0 | 0.1 | 0.1 | 0.9058 | 0.8732 | 0.7404 | 0.4686 |
 | A3 | Without UG-MMD Domain Alignment | 1.0 (CBF) | 2.5 | 0.5 | 0.0 | 0.1 | 0.9060 | 0.8799 | 0.7506 | 0.4554 |
-| A4 | Without Orthogonality ($\mathcal{L}_{\text{orth}} = 0$) | 1.0 (CBF) | 2.5 | 0.5 | 0.1 | 0.0 | 0.9121 | 0.8866 | 0.7752 | 0.4488 |
+| A4 | Without Orthogonality Penalty ($\mathcal{L}_{\text{orth}} = 0$)$^*$ | 1.0 (CBF) | 2.5 | 0.5 | 0.1 | 0.0 | 0.9121 | 0.8866 | 0.7752 | 0.4488 |
+| A5 | Without Task Disentangler Module$^\dagger$ | 1.0 (CBF) | 2.5 | 0.5 | 0.1 | --- | --- | --- | --- | --- |
 | A6 | Standard CE instead of CB-Focal | 1.0 (CE) | 2.5 | 0.5 | 0.1 | 0.1 | 0.9265 | 0.9060 | 0.7558 | 0.4851 |
 | A7 | Uniform LMCoT (No Hard Mining) | 1.0 (CBF) | 2.5 | 0.5 | 0.1 | 0.1 | 0.8941 | 0.8623 | 0.7462 | 0.5017 |
+
+$^*$Note: A4 evaluates the removal of the orthogonality regularization penalty ($\lambda_{\text{orth}}=0$) with the 3-subspace TaskDisentangler module active.
+$^\dagger$Note: A5 (complete omission of TaskDisentangler to route monolithic fused features directly to task heads) was not performed; changing head input dimensions from 1,280-D to 2,560-D alters classifier capacity.
+
 
 ### 6.5 Verified Computational Efficiency
 The exact architectural parameter counts and memory footprints—verified directly from the model implementation—are reported in Table III and Table VIII:

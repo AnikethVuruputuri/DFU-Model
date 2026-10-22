@@ -12,6 +12,7 @@ This report documents the completed ablation study executed on Kaggle Dual-T4 GP
 | **A2_NoLMCoT** | Without Tangent LMCoT Metric Learning ($\lambda_{\text{lmcot}} = 0$) | 1.0 (CBF) | 2.5 | 0.0 | 0.1 | 0.1 | 0.9058 | 0.8732 | 0.7404 | 0.4686 |
 | **A3_NoUGMMD** | Without Uncertainty-Gated MMD Alignment ($\lambda_{\text{mmd}} = 0$) | 1.0 (CBF) | 2.5 | 0.5 | 0.0 | 0.1 | 0.9060 | 0.8799 | 0.7506 | 0.4554 |
 | **A4_NoOrth** | Without Orthogonality Disentanglement ($\lambda_{\text{orth}} = 0$) | 1.0 (CBF) | 2.5 | 0.5 | 0.1 | 0.0 | 0.9121 | 0.8866 | 0.7752 | 0.4488 |
+| **A5_NoDisentangle** | Without Task Disentangler Module (Architectural Control) | 1.0 (CBF) | 2.5 | 0.5 | 0.1 | --- | *Not Performed* | *Not Performed* | *Not Performed* | *Not Performed* |
 | **A6_StandardCE** | Standard Cross-Entropy (No Class-Balanced Focal Loss) | 1.0 (CE) | 2.5 | 0.5 | 0.1 | 0.1 | 0.9265 | 0.9060 | 0.7558 | 0.4851 |
 | **A7_NoHardMining** | Random Pairs without Hard-Mining LMCoT | 1.0 (CBF) | 2.5 | 0.5 | 0.1 | 0.1 | 0.8941 | 0.8623 | 0.7462 | 0.5017 |
 
@@ -36,3 +37,7 @@ This report documents the completed ablation study executed on Kaggle Dual-T4 GP
    - Single-task pathology (A0-Path) achieves **0.9226** Macro-F1 and **0.8959** Accuracy.
    - Single-task Wagner depth (A0-Wag) achieves **0.7834** QWK and **0.4389** MAE.
    - The multi-task network (A1) achieves **0.9102** Macro-F1 and **0.7619** Wagner QWK concurrently, demonstrating minimal multi-task degradation while enabling simultaneous multi-task clinical decision support.
+
+
+### Note on Planned A5 Ablation ("No Task Disentanglement")
+The planned A5 ablation (complete removal of the `TaskDisentangler` to feed monolithic fused features directly to task heads) was not performed. In the architecture, each head expects 1,280-D input (`z_shared` + `z_private`). Removing the disentangler would require feeding the full 2,560-D fused representation, which alters classifier head parameter counts and confounds structural disentanglement with head capacity scaling. A4 ($\lambda_{\text{orth}} = 0$) was previously conflated with A5 in earlier notes, but A4 strictly evaluates the loss penalty with the 3-subspace disentangler routing still intact.
