@@ -220,12 +220,17 @@ def train_dfu_siam(args):
     print(f"DFUC CSV: {total_csv_rows} total rows, {unlabeled_rows} unlabeled (dropped), {labeled_rows} labeled.")
     print(f"  Class distribution: {dict(zip(class_cols, samples_per_cls))}")
 
+    # Clean Manifest Quarantine Protocol & Partition Seed Selection
+    clean_manifest_path = getattr(args, 'clean_manifest', None)
+    split_seed = getattr(args, 'split_seed', 42)
+    if clean_manifest_path and os.path.exists(clean_manifest_path) and split_seed != 42:
+        print(f"[Clean Split Protocol] clean_manifest is bound to canonical split_seed=42. Preserving split_seed=42 to maintain leak-free partition integrity.")
+        split_seed = 42
+
     train_df, val_df = train_test_split(
-        df, test_size=args.val_split, random_state=args.seed, stratify=df['class']
+        df, test_size=args.val_split, random_state=split_seed, stratify=df['class']
     )
 
-    # Clean Manifest Quarantine Protocol
-    clean_manifest_path = getattr(args, 'clean_manifest', None)
     if clean_manifest_path and os.path.exists(clean_manifest_path):
         import json
         with open(clean_manifest_path, 'r') as f:
@@ -1035,7 +1040,8 @@ if __name__ == "__main__":
     parser.add_argument("--val_interval", type=int, default=1, help="Validation evaluation interval (epochs)")
     parser.add_argument("--monitor_metric", type=str, default="macro_f1", choices=["macro_f1", "accuracy", "qwk", "mae", "wagner_acc", "joint"], help="Validation metric for checkpoint selection ('joint' balances DFUC accuracy and Wagner metrics)")
     parser.add_argument("--num_workers", type=int, default=0, help="DataLoader num workers")
-    parser.add_argument("--seed", type=int, default=42, help="Random seed")
+    parser.add_argument("--seed", type=int, default=42, help="Random seed for model initialization, data augmentation, and mini-batch sampling")
+    parser.add_argument("--split_seed", type=int, default=42, help="Random seed for stratified train/val dataset partition (default: 42 to preserve canonical clean validation partition across multi-seed runs)")
     parser.add_argument("--deterministic", action="store_true", help="Enable cuDNN deterministic mode for full reproducibility")
     parser.add_argument("--grad_clip", type=float, default=1.0, help="Maximum gradient norm threshold (0.0 to disable)")
     parser.add_argument("--pilot", action="store_true", help="Run short pilot mode for training pipeline verification")

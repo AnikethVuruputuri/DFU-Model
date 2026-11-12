@@ -69,7 +69,7 @@ def evaluate_wagner_ordinal(model, dataloader, device, ordinal_loss_fn):
 
 
 def predict_ut_grid(dfu_probs, wagner_out, scale=1.0):
-    """
+    r"""
     Combines DFU pathology probabilities (4,) and Wagner ordinal output into an exploratory 16-cell UT wound grid (4 x 4).
     UT Depth: 0 (Wagner 0), 1 (Wagner 1), 2 (Wagner 2), 3 (Wagner 3 & 4)
     UT Stage: Stage A (None), Stage B (Infection), Stage C (Ischaemia), Stage D (Both)
