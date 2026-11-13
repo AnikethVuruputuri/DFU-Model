@@ -237,8 +237,15 @@ Neither DFUC2021 nor the Wagner dataset provides patient identification metadata
 % =========================================================================
 \section{Proposed DFU-WAGNER net Methodology}
 
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.98\textwidth]{figures/fig1_architecture.pdf}
+\caption{Overall End-to-End Architecture of DFU-WAGNER net. The framework couples an EfficientNetV2-S convolutional stream (capturing localized epidermal textures) with a Swin-Transformer Tiny stream (capturing macroscopic spatial foot morphology) via symmetrical 1,280-D linear projection heads. The fused 2,560-D representation is partitioned by the 3-way TaskDisentangler into an $L_2$-normalized shared anatomical subspace ($z_{\text{shared}} \in \mathbb{R}^{768}$) and task-isolated private subspaces ($z_{\text{path\_private}}, z_{\text{depth\_private}} \in \mathbb{R}^{512}$), strictly constrained by pairwise cosine Orthogonality Loss ($\mathcal{L}_{\text{orth}}$). Domain shifts are minimized via Uncertainty-Gated MMD ($\mathcal{L}_{\text{mmd}}$), minority representations are regularized via Hard-Pair Tangent LMCoT Metric Learning ($\mathcal{L}_{\text{lmcot}}$), and outputs are produced via Class-Balanced Focal Loss (Pathology) and CORAL Ordinal Regression (Wagner Depth).}
+\label{fig:architecture}
+\end{figure*}
+
 \subsection{Overall Architectural Pipeline}
-Given an input RGB image $x \in \mathbb{R}^{B \times 3 \times 224 \times 224}$, the forward processing pipeline proceeds through five modular stages:
+As illustrated in Fig.~\ref{fig:architecture}, given an input RGB image $x \in \mathbb{R}^{B \times 3 \times 224 \times 224}$, the forward processing pipeline proceeds through five modular stages:
 \begin{enumerate}
     \item \textbf{Asymmetric Dual-Backbone Feature Extraction}: Processing $x$ simultaneously through an EfficientNetV2-S CNN branch and a Swin-Transformer Tiny branch.
     \item \textbf{Symmetrical Projection}: Mapping disparate CNN (1,280-D) and Transformer (768-D) feature dimensions into symmetrical 1,280-D vector spaces.
@@ -331,8 +338,15 @@ An exploratory $5 \times 4$ joint probability distribution over the 20 discrete 
 \end{equation}
 We emphasize that \textbf{this $5 \times 4$ product represents an exploratory bivariate distribution and must not be confused with or equated to the 16-cell University of Texas (UT) diabetic wound classification} (which comprises 4 depth grades $\times$ 4 clinical stages). Because public datasets lack co-annotated UT ground truth, this joint output serves as an exploratory diagnostic visualization rather than a clinically validated prognostic risk score.
 
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/fig5_xai_attribution.pdf}
+\caption{Multi-Branch Saliency Attribution and Model Explainability for Diabetic Foot Ulcer Characterization. (a) Input macroscopic wound image exhibiting Wagner Grade 2 ulceration with bacterial infection. (b) CNN branch Grad-CAM attribution localized to granular periwound erythema and epidermal exudate. (c) Swin-Transformer branch Grad-CAM capturing macroscopic foot geometry and anatomical plantar margins. (d) Fused multi-task attribution reflecting joint shared and private subspace activations. (e) Integrated Gradients attribution providing high-resolution pixel-level verification of active lesion boundaries.}
+\label{fig:xai_attribution}
+\end{figure*}
+
 \subsection{Explainability via Multi-Branch Grad-CAM}
-Visual attribution maps $M_{\text{CAM}}(x)$ are extracted via multi-branch Grad-CAM \cite{selvaraju2017grad} targeting the final convolutional stage of EfficientNetV2-S and the final normalization block of Swin-Tiny. Attribution heatmaps represent post-hoc gradient saliency maps and do not constitute segmentation masks or causal clinical proofs.
+Visual attribution maps $M_{\text{CAM}}(x)$ are extracted via multi-branch Grad-CAM \cite{selvaraju2017grad} (illustrated in Fig.~\ref{fig:xai_attribution}) targeting the final convolutional stage of EfficientNetV2-S and the final normalization block of Swin-Tiny. Attribution heatmaps represent post-hoc gradient saliency maps and do not constitute segmentation masks or causal clinical proofs.
 
 % =========================================================================
 % SECTION V: EXPERIMENTAL SETUP
@@ -402,8 +416,15 @@ During training, images are resized to $224 \times 224$ and subjected to a clini
 % =========================================================================
 \section{Results}
 
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.92\textwidth]{figures/fig2_training_dynamics.pdf}
+\caption{DFU-WAGNER net 50-Epoch Multi-Seed Training Dynamics and Empirical Convergence across Seeds 42, 123, and 2026. (a) Multi-Task Joint Training Loss with Mean $\pm$ Standard Deviation confidence envelope. (b) DFUC2021 validation Macro-F1 progression, annotating peak checkpoints (Epoch 41 for Seed 42, Epoch 44 for Seed 123, Epoch 46 for Seed 2026). (c) Wagner depth validation Quadratic Weighted Kappa (QWK) convergence across seeds. (d) Differential learning rate schedules illustrating 3-epoch linear warmup followed by cosine annealing decay to $\eta_{\min} = 1 \times 10^{-7}$ for backbone and task heads.}
+\label{fig:training_dynamics}
+\end{figure*}
+
 \subsection{Pathology Classification Performance}
-Table~\ref{tab:dfuc_comparison} summarizes performance across the DFUC2021 pathology benchmark. To preserve scientific integrity, the table explicitly delineates published official competition hidden-test-set evaluations, published independent literature splits, and our internal development validation cohort evaluations.
+Figure~\ref{fig:training_dynamics} tracks multi-task training dynamics across all 50 epochs for Seeds 42, 123, and 2026, while Table~\ref{tab:dfuc_comparison} summarizes definitive performance across the DFUC2021 pathology benchmark. To preserve scientific integrity, the table explicitly delineates published official competition hidden-test-set evaluations, published independent literature splits, and our internal development validation cohort evaluations.
 
 On the 20\% held-out development validation split ($n = 1,191$), the complete 50-epoch DFU-WAGNER net multi-seed campaign (Seeds 42, 123, 2026) trained under the cryptographically verified leak-free quarantined split achieves a mean Macro-F1 score of \textbf{0.9456 $\pm$ 0.0043} and an overall accuracy of \textbf{93.65 $\pm$ 0.38\%} (peaking at \textbf{0.9509} Macro-F1 and \textbf{94.12\%} accuracy for Seed 123). Most significantly, DFU-WAGNER net elevates the critical minority class (\textit{Ischaemia}) to an F1-score of \textbf{0.9338 $\pm$ 0.0090} with a mean sensitivity of \textbf{92.03 $\pm$ 1.02\%} (diagnosing 43 out of 46 true ischaemic presentations in Seed 123 and 42/46 in Seeds 42 and 2026). Furthermore, the complex dual-pathology \textit{Both} category achieves a mean F1-score of \textbf{0.9880 $\pm$ 0.0000} with near-perfect recall (\textbf{99.73 $\pm$ 0.38\%}).
 
@@ -437,8 +458,15 @@ DFU-WAGNER net (50-Epoch, Seed 2026) & EfficientNetV2-S + Swin-Tiny & 20\% Val S
 \end{tabular}
 \end{table*}
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig3_pathology_confusion_matrix.pdf}
+\caption{DFUC2021 Benchmark Diagnostic Performance on the Clean Held-Out Development Validation Split ($n=1,191$, Macro-F1 = 0.9509). (a) Confusion matrix showing raw case counts across all four categories. (b) Normalized sensitivity matrix demonstrating strong recall on the critical minority \textit{Ischaemia} category (93.5\% sensitivity, 43/46 cases) and near-perfect sensitivity on high-risk compound \textit{Both} presentations (124/124 cases).}
+\label{fig:pathology_cm}
+\end{figure}
+
 \subsection{Per-Class Performance Breakdown}
-Table~\ref{tab:per_class} details per-class precision, recall, and F1-score across all four DFUC2021 categories on the clean development validation cohort ($n = 1,191$), reporting both multi-seed statistics (Mean $\pm$ Standard Deviation across Seeds 42, 123, 2026) and representative primary seed results. Across all seeds, the architecture demonstrates exceptional sensitivity on the minority \textit{Ischaemia} class (\textbf{92.03 $\pm$ 1.02\%} recall, \textbf{0.9338 $\pm$ 0.0090} F1-score), effectively preventing limbs with underlying peripheral arterial disease from being misclassified as uncomplicated ulcers. Concurrently, the compound \textit{Both} class attains a precision of \textbf{0.9789 $\pm$ 0.0036} and a recall of \textbf{0.9973 $\pm$ 0.0038} (124/124 true instances detected in Seeds 42 and 2026, 123/124 in Seed 123), bounding diagnostic leakage on complex presentations.
+Table~\ref{tab:per_class} and Fig.~\ref{fig:pathology_cm} detail per-class precision, recall, and confusion distributions across all four DFUC2021 categories on the clean development validation cohort ($n = 1,191$), reporting both multi-seed statistics (Mean $\pm$ Standard Deviation across Seeds 42, 123, 2026) and representative primary seed results. Across all seeds, the architecture demonstrates exceptional sensitivity on the minority \textit{Ischaemia} class (\textbf{92.03 $\pm$ 1.02\%} recall, \textbf{0.9338 $\pm$ 0.0090} F1-score), effectively preventing limbs with underlying peripheral arterial disease from being misclassified as uncomplicated ulcers. Concurrently, the compound \textit{Both} class attains a precision of \textbf{0.9789 $\pm$ 0.0036} and a recall of \textbf{0.9973 $\pm$ 0.0038} (124/124 true instances detected in Seeds 42 and 2026, 123/124 in Seed 123), bounding diagnostic leakage on complex presentations.
 
 \begin{table}[h]
 \centering
@@ -458,8 +486,15 @@ Both (Inf + Isch) & 124 & 0.9789 $\pm$ 0.0036 & 0.9973 $\pm$ 0.0038 & \textbf{0.
 \end{tabular}
 \end{table}
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig4_wagner_ordinal_grading.pdf}
+\caption{Wagner Ulcer Depth Ordinal Staging Fidelity on the Clean Validation Split ($n=303$, QWK = 0.7750). (a) Ordinal confusion matrix showing high concentration along the tridiagonal adjacent-grade band ($|\hat{y}-y| \le 1$). (b) Prediction error distance distribution ($\Delta = \hat{y} - y$), demonstrating that 67.7\% of predictions are exact and 90.4\% fall strictly within contiguous grade boundaries, bounding Mean Absolute Error to 0.4356 grades.}
+\label{fig:wagner_ordinal}
+\end{figure}
+
 \subsection{Wagner Depth Ordinal Grading Results}
-Table~\ref{tab:wagner_results} summarizes ordinal depth grading performance across the clean, leak-free Wagner validation cohort ($n = 303$) over the complete 50-epoch multi-seed training campaign. Across Seeds 42, 123, and 2026, DFU-WAGNER net attains a mean exact classification accuracy of \textbf{67.66 $\pm$ 0.47\%} and an adjacent-grade accuracy of \textbf{91.09 $\pm$ 0.71\%} (reaching \textbf{92.08\%} in Seed 2026), bounding Mean Absolute Error to \textbf{0.4433 $\pm$ 0.0109} grades and achieving an ordinal Quadratic Weighted Kappa of \textbf{0.7621 $\pm$ 0.0124} (peaking at \textbf{0.7750} in Seed 42). Individual per-grade F1-scores confirm consistent biophysical ordering: Grade 0 (intact skin) achieves \textbf{0.9845 $\pm$ 0.0110} F1 (100\% in Seed 42); Grade 1 achieves \textbf{0.7125 $\pm$ 0.0136}; Grade 2 achieves \textbf{0.6384 $\pm$ 0.0150}; Grade 3 achieves \textbf{0.4222 $\pm$ 0.0436}; and Grade 4 (gangrene) achieves \textbf{0.7544 $\pm$ 0.0249} F1.
+Table~\ref{tab:wagner_results} and Fig.~\ref{fig:wagner_ordinal} summarize ordinal depth grading performance and error distance distributions across the clean, leak-free Wagner validation cohort ($n = 303$) over the complete 50-epoch multi-seed training campaign. Across Seeds 42, 123, and 2026, DFU-WAGNER net attains a mean exact classification accuracy of \textbf{67.66 $\pm$ 0.47\%} and an adjacent-grade accuracy of \textbf{91.09 $\pm$ 0.71\%} (reaching \textbf{92.08\%} in Seed 2026), bounding Mean Absolute Error to \textbf{0.4433 $\pm$ 0.0109} grades and achieving an ordinal Quadratic Weighted Kappa of \textbf{0.7621 $\pm$ 0.0124} (peaking at \textbf{0.7750} in Seed 42). Individual per-grade F1-scores confirm consistent biophysical ordering: Grade 0 (intact skin) achieves \textbf{0.9845 $\pm$ 0.0110} F1 (100\% in Seed 42); Grade 1 achieves \textbf{0.7125 $\pm$ 0.0136}; Grade 2 achieves \textbf{0.6384 $\pm$ 0.0150}; Grade 3 achieves \textbf{0.4222 $\pm$ 0.0436}; and Grade 4 (gangrene) achieves \textbf{0.7544 $\pm$ 0.0249} F1.
 
 \begin{table}[h]
 \centering

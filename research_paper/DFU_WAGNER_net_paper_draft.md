@@ -176,6 +176,9 @@ Crucially, **$\mathcal{D}_{\text{path}}$ and $\mathcal{D}_{\text{wagner}}$ are c
 
 # 4. Proposed DFU-WAGNER net Methodology
 
+![Figure 1: Complete DFU-WAGNER net Architecture](figures/fig1_architecture.png)
+*Figure 1: End-to-end multi-task architecture coupling EfficientNetV2-S and Swin-Transformer Tiny through symmetrical projections, 3-way TaskDisentangler, domain alignment, and ordinal classification.*
+
 ### 4.1 Overall Architecture Pipeline
 The end-to-end architecture of **DFU-WAGNER net** is depicted in Figure 1. Given an input RGB image $x \in \mathbb{R}^{B \times 3 \times 224 \times 224}$, the forward processing pipeline proceeds through five modular stages:
 1. **Asymmetric Dual-Backbone Feature Extraction**: Processing $x$ simultaneously through an EfficientNetV2-S CNN branch and a Swin-Transformer Tiny branch.
@@ -341,6 +344,10 @@ with empirically validated loss balancing hyperparameters:
 - $\lambda_{\text{orth}} = 0.1$ (Subspace disentanglement regularization)
 
 ### 4.12 Explainability Framework via Multi-Branch Grad-CAM
+
+![Figure 5: Multi-Branch Explainability](figures/fig5_xai_attribution.png)
+*Figure 5: Multi-branch saliency attribution across CNN, Swin-ViT, and Fused latent streams alongside Integrated Gradients verification.*
+
 To provide visual attribution for clinical inspection, DFU-WAGNER net implements multi-branch Grad-CAM [34]. Because the network is a CNN-Transformer hybrid, gradient saliency maps are extracted from both branches via `get_cam_target_layers()`:
 - **CNN Target**: The final convolutional stage (`conv_head` or `blocks[-1]` of EfficientNetV2-S).
 - **Transformer Target**: The final block normalization layer (`layers[-1].blocks[-1].norm1` in Stage 3 of Swin-Tiny).
@@ -400,6 +407,9 @@ All evaluations are conducted using the standalone evaluator `evaluate_checkpoin
 
 # 6. Results
 
+![Figure 2: Training Dynamics](figures/fig2_training_dynamics.png)
+*Figure 2: Multi-seed training dynamics and convergence curves across 50 epochs for Seeds 42, 123, and 2026.*
+
 ### 6.1 Pathology Classification Results
 Table IV compares the proposed DFU-WAGNER net architecture against competitive published benchmarks on the DFUC2021 challenge benchmark, explicitly delineating published official competition hidden-test-set evaluations, published independent literature splits, and internal development validation evaluations on the clean leak-free quarantined split. 
 
@@ -423,6 +433,10 @@ Across the complete 50-epoch multi-seed evaluation campaign (Seeds 42, 123, 2026
 $^*$Note: The 25-epoch A1 screening model represents the rapid component screening run (Seed 42). Multi-seed 50-epoch results reflect full training convergence on the clean leak-free quarantined split with atomic best-joint checkpoint selection. Direct numerical comparison between Parts A, B, and C is invalid due to differing evaluation partitions and hidden server protocols.
 
 ### 6.2 Per-Class Performance Breakdown
+
+![Figure 3: Pathology Confusion Matrix](figures/fig3_pathology_confusion_matrix.png)
+*Figure 3: Raw case counts and normalized sensitivity heatmaps on the clean DFUC2021 validation split.*
+
 Table VI details per-class precision, recall, and F1-score across all four DFUC2021 categories on the clean development validation cohort ($n = 1,191$), reporting multi-seed statistics (Mean ± Standard Deviation across Seeds 42, 123, 2026). Across all seeds, the architecture demonstrates exceptional sensitivity on the minority *Ischaemia* class (**92.03 ± 1.02%** recall, **0.9338 ± 0.0090** F1-score), effectively preventing limbs with underlying peripheral arterial disease from being misclassified as uncomplicated ulcers. Concurrently, the compound *Both* class attains a precision of **0.9789 ± 0.0036** and a recall of **0.9973 ± 0.0038** (124/124 true instances detected in Seeds 42 and 2026, 123/124 in Seed 123), bounding diagnostic leakage on complex presentations.
 
 | Pathology Class | Support ($n$) | Precision | Recall | F1-Score |
@@ -434,6 +448,10 @@ Table VI details per-class precision, recall, and F1-score across all four DFUC2
 | **Macro Average** | **1,191** | **0.9472 ± 0.0049** | **0.9443 ± 0.0037** | **0.9456 ± 0.0043** |
 
 ### 6.3 Wagner Depth Ordinal Grading Results
+
+![Figure 4: Wagner Ordinal Grading](figures/fig4_wagner_ordinal_grading.png)
+*Figure 4: Wagner depth ordinal confusion matrix and grade discrepancy error distance distribution.*
+
 Table VII summarizes ordinal depth grading performance across the clean, leak-free Wagner validation cohort ($n = 303$) over the complete 50-epoch multi-seed training campaign. Across Seeds 42, 123, and 2026, DFU-WAGNER net attains a mean exact classification accuracy of **67.66 ± 0.47%** and an adjacent-grade accuracy of **91.09 ± 0.71%** (reaching **92.08%** in Seed 2026), bounding Mean Absolute Error to **0.4433 ± 0.0109** grades and achieving an ordinal Quadratic Weighted Kappa of **0.7621 ± 0.0124** (peaking at **0.7750** in Seed 42). Individual per-grade F1-scores confirm consistent biophysical ordering: Grade 0 (intact skin) achieves **0.9845 ± 0.0110** F1 (100% in Seed 42); Grade 1 achieves **0.7125 ± 0.0136**; Grade 2 achieves **0.6384 ± 0.0150**; Grade 3 achieves **0.4222 ± 0.0436**; and Grade 4 (gangrene) achieves **0.7544 ± 0.0249** F1.
 
 | Evaluation Setting / Seed | Accuracy (%) | Adj. Acc. (%) | MAE | QWK |
