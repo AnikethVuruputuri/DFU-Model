@@ -27,7 +27,7 @@
 | **A4** | No Orthogonality Regularization ($\lambda_{\text{orth}}=0$) | **COMPLETED (Kaggle Dual-T4)** | `logs/A4_NoOrth.log` | Macro-F1 | Table V (Ablation) |
 | **A6** | Standard CE instead of CB-Focal | **COMPLETED (Kaggle Dual-T4)** | `logs/A6_StandardCE.log` | Macro-F1 / Accuracy | Table V (Ablation) |
 | **A7** | Uniform LMCoT Pairs (No Hard Mining) | **COMPLETED (Kaggle Dual-T4)** | `logs/A7_NoHardMining.log` | Macro-F1 | Table V (Ablation) |
-| **Seed Runs** | Multi-Seed Reproducibility (Seeds 123, 2026) | Pending Execution | `checkpoints_v3_seed123/`, `...2026/` | Mean $\pm$ Std | Table IV (Final Confidence Intervals) |
+| **Seed Runs** | Multi-Seed Reproducibility (Seeds 42, 123, 2026) | **COMPLETED (50-Epoch Clean)** | `50-epoch/learning_curves-seed*.json` | Mean $\pm$ Std | Table IV, Table VI, Table VII |
 | **XAI-GradCAM**| Multi-Branch Grad-CAM Visualizations | Pending Generation | `output_cam_v3/` | Qualitative Attribution | Figure 7 |
 
 ---

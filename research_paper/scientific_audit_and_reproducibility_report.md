@@ -183,7 +183,43 @@ The final manuscript Table IV has been updated to reflect the leak-free quaranti
    - Without orthogonality penalties ($\lambda_{\text{orth}}=0$, A4), features freely co-adapt and slightly elevate empirical screening metrics (Macro-F1 0.9121, QWK 0.7752), but sacrifice feature disentanglement and clinical explainability.
    - The clinical value of A1 is providing unified, concurrent dual-axis predictions within a single 59.78M parameter architecture.
 
+#### 3. Clean-Split 50-Epoch Multi-Seed Production Campaign Verification (Seeds 42, 123, 2026)
+
+To eliminate random initialization variance and establish definitive statistical convergence on the clean leak-free quarantined split, a 50-epoch multi-seed training campaign was executed across three independent seeds: Seed 42, Seed 123, and Seed 2026. Each run consumed `research_paper/clean_leak_free_split_manifest.json` with pre-training assertion verification in `leakage_guard.py`.
+
+**Peak Checkpoint Provenance (Atomic Joint-Harmonic Score Selection)**:
+- **Seed 42**: Best Epoch = 41 (Joint Multi-Task Score = 0.8171; DFUC Macro-F1 = 0.9405, Accuracy = 93.20%, Wagner QWK = 0.7750, Wagner MAE = 0.4356)
+- **Seed 123**: Best Epoch = 44 (Joint Multi-Task Score = 0.8079; DFUC Macro-F1 = 0.9509, Accuracy = 94.12%, Wagner QWK = 0.7455, Wagner MAE = 0.4587)
+- **Seed 2026**: Best Epoch = 46 (Joint Multi-Task Score = 0.8158; DFUC Macro-F1 = 0.9453, Accuracy = 93.62%, Wagner QWK = 0.7659, Wagner MAE = 0.4356)
+
+**Empirical Metrics Summary (Mean ± Standard Deviation across 3 Independent Seeds)**:
+| Metric Category | Specific Evaluation Metric | Seed 42 | Seed 123 | Seed 2026 | Multi-Seed Mean ± Std |
+| :--- | :--- | :---: | :---: | :---: | :---: |
+| **DFUC Pathology** | Macro-F1 | 0.9405 | 0.9509 | 0.9453 | **0.9456 ± 0.0043** |
+| | Overall Accuracy (%) | 93.20% | 94.12% | 93.62% | **93.65 ± 0.38%** |
+| | Macro Precision | 0.9409 | 0.9529 | 0.9480 | **0.9472 ± 0.0049** |
+| | Macro Recall (UAR) | 0.9406 | 0.9494 | 0.9430 | **0.9443 ± 0.0037** |
+| | Matthews Corr. Coeff. (MCC) | 0.8907 | 0.9055 | 0.8973 | **0.8978 ± 0.0061** |
+| | Macro AUROC | 0.9791 | 0.9878 | 0.9817 | **0.9829 ± 0.0036** |
+| **Pathology Per-Class F1** | None (Control) | 0.9237 | 0.9335 | 0.9266 | **0.9279 ± 0.0041** |
+| | Infection | 0.9274 | 0.9373 | 0.9332 | **0.9326 ± 0.0041** |
+| | Ischaemia (Minority) | 0.9231 | 0.9451 | 0.9333 | **0.9338 ± 0.0090** |
+| | Both (Inf + Isch) | 0.9880 | 0.9880 | 0.9880 | **0.9880 ± 0.0000** |
+| **Wagner Ordinal Depth** | Quadratic Weighted Kappa (QWK) | 0.7750 | 0.7455 | 0.7659 | **0.7621 ± 0.0124** |
+| | Exact Match Accuracy (%) | 67.99% | 67.00% | 67.99% | **67.66 ± 0.47%** |
+| | Adjacent Grade Accuracy (%) | 90.43% | 90.76% | 92.08% | **91.09 ± 0.71%** |
+| | Mean Absolute Error (MAE) | 0.4356 | 0.4587 | 0.4356 | **0.4433 ± 0.0109** |
+| **Wagner Per-Grade F1** | Grade 0 (Intact Skin) | 1.0000 | 0.9767 | 0.9767 | **0.9845 ± 0.0110** |
+| | Grade 1 (Superficial Ulcer) | 0.7308 | 0.6980 | 0.7089 | **0.7125 ± 0.0136** |
+| | Grade 2 (Deep Ulcer) | 0.6404 | 0.6557 | 0.6190 | **0.6384 ± 0.0150** |
+| | Grade 3 (Abscess / Osteo) | 0.3636 | 0.4348 | 0.4681 | **0.4222 ± 0.0436** |
+| | Grade 4 (Gangrene) | 0.7746 | 0.7194 | 0.7692 | **0.7544 ± 0.0249** |
+
+**Audit Conclusion on Multi-Seed Verification**:
+The prior limitation regarding single-seed evaluation is formally resolved. All three random seeds converge stably within epochs 41–46 with narrow standard deviation (Macro-F1 $\pm 0.0043$, Accuracy $\pm 0.38\%$, QWK $\pm 0.0124$), verifying the statistical stability and multi-task reproducibility of DFU-WAGNER net.
+
 ---
+
 
 ### Phase 6: Mathematical Formulations Audit
 
@@ -214,6 +250,7 @@ The final manuscript Table IV has been updated to reflect the leak-free quaranti
 | **Karthik et al. Citation** | Listed under official test set with placeholder authors | Published in *Sci. Rep.* 2025 on independent split; author list and title verified | **Medium** | Corrected `references.bib` entry and moved to independent split section in Table I | **VERIFIED & RESOLVED** |
 | **Ablation Interpretation** | Claimed full model outperformed all variants on all metrics | A0-Path (0.9226), A0-Wag (0.7834), A6 (0.9265), and A4 (0.9121) beat A1 on specific metrics | **Medium** | Added comprehensive discussion of multi-task Pareto trade-offs and gradient tension | **VERIFIED & RESOLVED** |
 | **Loss Balancing Weights** | $\boldsymbol{\lambda} = [1.0, 1.0, 0.5, 0.1, 0.1]$ | $\lambda_{\text{coral}} = 2.5$ in all configs ($\boldsymbol{\lambda} = [1.0, 2.5, 0.5, 0.1, 0.1]$) | **Medium** | Updated equation and text to $\lambda_{\text{coral}} = 2.5$ | **VERIFIED & RESOLVED** |
+| **Single-Seed Initialization** | Evaluated under fixed seed 42 only | Successfully trained 50 epochs across Seeds 42, 123, 2026 on clean split | **Medium** | Added full multi-seed metrics (Mean ± Std) in Tables I, II, III | **VERIFIED & RESOLVED** |
 
 ---
 

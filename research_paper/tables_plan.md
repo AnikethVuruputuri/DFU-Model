@@ -19,7 +19,7 @@ This document specifies the exact formatting, column headers, verified architect
 | **Zhou et al.** [15] | 2025 | Front. Endocrinol. | Mask2Former + Swin-Transformer | Single-task (Wagner 1–4 Depth) | None | Accuracy = 91.85% |
 | **Karthik et al.** [11] | 2025 | Sci. Reports | Swin-Transformer + EMA Attention | Single-task (4-class Pathology) | None | External Accuracy > 89% |
 | **Abdullah et al.** [10] | 2025 | Front. Artif. Intell. | SimCLR SSL + Dual-Head DenseNet | Joint Triage + Severity (0–3) | Heuristic Merging | Accuracy = 95.5% |
-| **DFU-WAGNER net (Ours)** | **2026** | **Present Work** | **EfficientNetV2-S + Swin-Tiny + Disentangler** | **Joint: 4-class Pathology + 5-class Wagner Ordinal** | **UG-MMD (RKHS)** | `[FINAL TEST RESULTS PENDING]` |
+| **DFU-WAGNER net (Ours, 50-Epoch Multi-Seed)** | **2026** | **Present Work** | **EfficientNetV2-S + Swin-Tiny + Disentangler** | **Joint: 4-class Pathology + 5-class Wagner Ordinal** | **UG-MMD (RKHS)** | **Macro-F1 = 0.9456 ± 0.0043, Acc = 93.65 ± 0.38%, QWK = 0.7621 ± 0.0124** |
 
 ---
 
@@ -74,15 +74,22 @@ This document specifies the exact formatting, column headers, verified architect
 
 ## Table IV: Performance Comparison Against Benchmark Literature on DFUC2021
 
-*Note: Baseline and competitor numbers are verified from published literature. DFU-WAGNER net numbers are verified from held-out validation cohort ($n=1,191$).*
+*Note: Delineates official competition hidden test set results, published independent literature splits, and clean leak-free quarantined internal validation split evaluations ($n=1,191$).*
 
-| Model / Framework | Backbone Architecture | Supervision Paradigm | DFUC Macro-F1 | Accuracy (%) | Precision (Macro) | Recall / UAR (Macro) | Ischaemia F1 (Minority) |
+| Model / Framework | Backbone Architecture | Evaluation Split / Protocol | DFUC Macro-F1 | Accuracy (%) | Precision (Macro) | Recall / UAR (Macro) | Ischaemia F1 (Minority) |
 | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: |
-| **DFUC2021 Baseline** [2] | CNN + ViT Ensemble | Supervised (CE) | 0.6228 | 83.12 | 0.6410 | 0.6120 | 0.3812 |
-| **Galdran et al.** [3] | ResNeXt50 + DeiT | SAM Optimizer + CE | **0.6307** | 84.50 | 0.6580 | 0.6240 | 0.4120 |
-| **Toofanee et al. (DFU-SIAM)** [1] | EfficientNetV2-S + BEiT | Siamese + LMCoT + CE | 0.6228 | 83.45 | 0.6390 | 0.6180 | 0.3950 |
-| **Karthik et al.** [11] | Swin + EMA Attention | Supervised (CE) | 0.6285 | 84.10 | 0.6490 | 0.6210 | 0.4010 |
-| **DFU-WAGNER net (Ours, 45-Epoch Final)** | **EfficientNetV2-S + Swin-Tiny** | **Multi-Task Disentangled + CB-Focal + Hard-LMCoT** | **0.9201** | **90.18** | **0.9134** | **0.9279** | **0.9149** |
+| **Part A: Official DFUC2021 Competition Hidden Test Set ($n \approx 5,734$)** | | | | | | | |
+| **DFUC2021 Baseline** [2] | CNN + ViT Ensemble | Official Test Set | 0.6228 | 83.12 | 0.6410 | 0.6120 | 0.3812 |
+| **Galdran et al.** [3] | ResNeXt50 + DeiT | Official Test Set | **0.6307** | 84.50 | 0.6580 | 0.6240 | 0.4120 |
+| **Toofanee et al. (DFU-SIAM)** [1] | EfficientNetV2-S + BEiT | Official Test Set | 0.6228 | 83.45 | 0.6390 | 0.6180 | 0.3950 |
+| **Part B: Published Literature on Independent DFUC Splits** | | | | | | | |
+| **Karthik et al.** [11] | Swin + EMA Attention | Independent Split | — | 89.20 | — | — | — |
+| **Part C: Internal Clean Leak-Free Quarantined Validation Split ($n = 1,191$)** | | | | | | | |
+| **DFU-WAGNER net (A1, 25-Epoch Screening)**$^*$ | EfficientNetV2-S + Swin-Tiny | 20% Clean Val Split | 0.9102 | 88.83 | 0.9015 | 0.9190 | 0.9348 |
+| **DFU-WAGNER net (50-Epoch, Seed 42)** | EfficientNetV2-S + Swin-Tiny | 20% Clean Val Split | 0.9405 | 93.20 | 0.9409 | 0.9406 | 0.9231 |
+| **DFU-WAGNER net (50-Epoch, Seed 123)** | EfficientNetV2-S + Swin-Tiny | 20% Clean Val Split | 0.9509 | 94.12 | 0.9529 | 0.9494 | 0.9451 |
+| **DFU-WAGNER net (50-Epoch, Seed 2026)** | EfficientNetV2-S + Swin-Tiny | 20% Clean Val Split | 0.9453 | 93.62 | 0.9480 | 0.9430 | 0.9333 |
+| **DFU-WAGNER net (50-Epoch Multi-Seed Mean)** | **EfficientNetV2-S + Swin-Tiny** | **20% Clean Val Split** | **0.9456 ± 0.0043** | **93.65 ± 0.38** | **0.9472 ± 0.0049** | **0.9443 ± 0.0037** | **0.9338 ± 0.0090** |
 
 ---
 
@@ -105,25 +112,28 @@ This document specifies the exact formatting, column headers, verified architect
 
 ## Table VI: Detailed Per-Class Pathology Classification Results (DFUC2021)
 
-*Note: Verified on held-out validation cohort ($n=1,191$).*
+*Note: Clean leak-free quarantined validation cohort ($n=1,191$), 50-Epoch Multi-Seed Mean ± Standard Deviation across Seeds 42, 123, 2026.*
 
 | Pathology Class | Support Count ($n$) | Precision | Recall (Sensitivity) | F1-Score |
 | :--- | :---: | :---: | :---: | :---: |
-| **None (Control)** | 510 | 0.9104 | 0.8569 | 0.8828 |
-| **Infection** | 511 | 0.8785 | 0.9198 | 0.8987 |
-| **Ischaemia (Minority)** | 46 | 0.8958 | 0.9348 | **0.9149** |
-| **Both (Inf + Isch)**| 124 | 0.9688 | 1.0000 | **0.9841** |
-| **Macro Average** | **1,191** | **0.9134** | **0.9279** | **0.9201** |
+| **None (Control)** | 510 | 0.9222 ± 0.0115 | 0.9340 ± 0.0138 | 0.9279 ± 0.0041 |
+| **Infection** | 511 | 0.9400 ± 0.0125 | 0.9256 ± 0.0131 | 0.9326 ± 0.0041 |
+| **Ischaemia (Minority)** | 46 | 0.9478 ± 0.0102 | 0.9203 ± 0.0102 | **0.9338 ± 0.0090** |
+| **Both (Inf + Isch)**| 124 | 0.9789 ± 0.0036 | 0.9973 ± 0.0038 | **0.9880 ± 0.0000** |
+| **Macro Average** | **1,191** | **0.9472 ± 0.0049** | **0.9443 ± 0.0037** | **0.9456 ± 0.0043** |
 
 ---
 
 ## Table VII: Detailed Wagner Depth Ordinal Grading Performance
 
-*Note: Evaluated on preserved deduplicated Wagner validation cohort ($n=303$).*
+*Note: Evaluated on clean leak-free quarantined Wagner validation cohort ($n=303$) over the complete 50-epoch multi-seed training campaign (Seeds 42, 123, 2026).*
 
-| Evaluation Cohort | Exact Accuracy (%) | Adjacent Accuracy ($|\hat{y}-y| \le 1$) (%) | Mean Absolute Error (MAE) | Quadratic Weighted Kappa (QWK) |
+| Evaluation Setting / Seed | Exact Accuracy (%) | Adjacent Accuracy ($|\hat{y}-y| \le 1$) (%) | Mean Absolute Error (MAE) | Quadratic Weighted Kappa (QWK) |
 | :--- | :---: | :---: | :---: | :---: |
-| **Validation ($n=303$)** | 68.65 | 91.42 | 0.4290 | 0.7765 |
+| **Seed 42 (Peak QWK Checkpoint)** | 67.99 | 90.43 | 0.4356 | 0.7750 |
+| **Seed 123** | 67.00 | 90.76 | 0.4587 | 0.7455 |
+| **Seed 2026 (Peak Adj. Acc Checkpoint)** | 67.99 | 92.08 | 0.4356 | 0.7659 |
+| **Multi-Seed Mean ± Std** | **67.66 ± 0.47** | **91.09 ± 0.71** | **0.4433 ± 0.0109** | **0.7621 ± 0.0124** |
 
 ---
 

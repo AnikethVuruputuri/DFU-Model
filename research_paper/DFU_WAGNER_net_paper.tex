@@ -52,7 +52,7 @@ To overcome these challenges, this paper presents \textbf{DFU-WAGNER net}, a uni
 
 To prevent cross-cohort distribution collapse, we introduce \textbf{Uncertainty-Gated Maximum Mean Discrepancy (UG-MMD)}, which aligns \textit{only} the shared subspace between cohorts using multi-scale Gaussian kernels dynamically modulated by detached predictive entropy confidence weights. Long-tailed pathology classification is optimized via \textbf{Class-Balanced Focal Loss} and \textbf{Hard-Pair Tangent LMCoT Metric Learning} on $z_{\text{shared}}$, while anatomical ulcer depth is modeled using \textbf{Consistent Rank Logits (CORAL)} ordinal cumulative cutoffs. 
 
-The primary 59,783,374-parameter architecture was evaluated across the DFUC2021 benchmark ($n = 5,955$ labeled samples) and a deduplicated Wagner cohort ($n = 11,491$ training samples). On the 20\% development validation split ($n = 1,191$), our primary 45-epoch model achieves a Macro-F1 of \textbf{0.9201} and an overall accuracy of \textbf{90.18\%}, elevating \textit{Ischaemia} F1-score to \textbf{0.9149} with \textbf{93.48\%} sensitivity. Concurrently, the network achieves an ordinal Quadratic Weighted Kappa (QWK) of \textbf{0.7765}, adjacent depth accuracy of \textbf{91.42\%}, and Mean Absolute Error (MAE) of \textbf{0.4290} on the Wagner grading validation set ($n = 303$). A $5 \times 4$ exploratory joint probability distribution models concurrent risk under conditional independence. Controlled ablations on the leak-free quarantined benchmark validate that active hard-pair mining provides a $+1.61\%$ Macro-F1 gain ($+2.60\%$ accuracy gain), while multi-task trade-offs and cross-dataset duplicate integrity are formally disclosed.
+The full 59,783,374-parameter architecture was evaluated across the DFUC2021 benchmark ($n = 5,955$ labeled samples) and a deduplicated Wagner cohort ($n = 11,371$ clean quarantined training samples). Across a rigorous 50-epoch multi-seed training campaign on the cryptographically verified leak-free split (Seeds 42, 123, 2026), DFU-WAGNER net achieves a mean Macro-F1 of \textbf{0.9456 $\pm$ 0.0043} and an overall accuracy of \textbf{93.65 $\pm$ 0.38\%} on the held-out development validation cohort ($n = 1,191$), reaching an \textit{Ischaemia} minority F1-score of \textbf{0.9338 $\pm$ 0.0090} (peak 0.9451) with \textbf{92.03 $\pm$ 1.02\%} sensitivity. Concurrently, the network achieves an ordinal Quadratic Weighted Kappa (QWK) of \textbf{0.7621 $\pm$ 0.0124} (peak 0.7750), adjacent depth accuracy of \textbf{91.09 $\pm$ 0.71\%}, and Mean Absolute Error (MAE) of \textbf{0.4433 $\pm$ 0.0109} grades on the clean Wagner validation set ($n = 303$). A $5 \times 4$ exploratory joint probability distribution models concurrent cross-taxonomy risk under conditional independence. Controlled ablations on the leak-free quarantined benchmark confirm that active hard-pair metric learning and uncertainty-gated domain alignment prevent negative transfer, while multi-task trade-offs and cross-dataset duplicate integrity are formally disclosed.
 \end{abstract}
 
 % =========================================================================
@@ -227,7 +227,7 @@ To prevent flawed conclusions, we rigorously distinguish between the counting un
     \item \textbf{Preserved Clean Evaluation Splits}: The 1,191 DFUC validation images, 303 Wagner validation images, and 157 Wagner test images were kept strictly untouched and 100\% leak-free.
 \end{itemize}
 
-All exclusion paths and cryptographic hashes are deposited in \texttt{dataset\_cross\_overlap\_manifest.json} and \texttt{clean\_leak\_free\_split\_manifest.json}. The 45-epoch primary model reflects the historical unquarantined split (with internal Wagner dedup), whereas the 25-epoch ablation screening study strictly consumes the leak-free quarantined split.
+All exclusion paths and cryptographic hashes are deposited in \texttt{dataset\_cross\_overlap\_manifest.json} and \texttt{clean\_leak\_free\_split\_manifest.json}. Both the systematic 25-epoch ablation screening study and the comprehensive 50-epoch multi-seed evaluation campaign strictly consume this cryptographically verified leak-free quarantined split with pre-training hash assertions.
 
 \subsection{Patient-Level Independence Limitation}
 Neither DFUC2021 nor the Wagner dataset provides patient identification metadata, clinical case numbers, or longitudinal timestamps. While our cryptographic hash deduplication guarantees \textbf{complete image-level and augmentation-level independence} across splits, patient-level independence cannot be mathematically proven. All reported evaluation metrics reflect sample-level generalization across independent photographic instances, consistent with standard practice on these public benchmarks.
@@ -340,33 +340,33 @@ Visual attribution maps $M_{\text{CAM}}(x)$ are extracted via multi-branch Grad-
 \section{Experimental Setup}
 
 \subsection{Hardware and Software Infrastructure}
-To ensure reproducibility and clear experimental provenance, all computational environments are explicitly documented:
+To ensure reproducibility and rigorous experimental provenance, computational environments are explicitly documented:
 \begin{itemize}
-    \item \textbf{Primary Model Environment (45-Epoch Run)}: Local workstation equipped with an NVIDIA GeForce RTX 3050 Laptop GPU (6,144 MB GDDR6 VRAM, Driver 572.16), host AMD Ryzen 7, Windows 11, Python 3.11.15, PyTorch 2.6.0 with CUDA 12.4 runtime (\texttt{2.6.0+cu124}).
-    \item \textbf{Ablation Screening Environment (25-Epoch Runs)}: Cloud compute node equipped with Dual NVIDIA T4 GPUs (16,384 MB GDDR6 VRAM each, CUDA 12.8), Ubuntu Linux 22.04 LTS, Python 3.13.15, PyTorch 2.11.0 with CUDA 12.8 runtime (\texttt{2.11.0+cu128}).
+    \item \textbf{Full Model 50-Epoch Multi-Seed Training}: Cloud compute infrastructure equipped with NVIDIA Tesla T4 GPUs (16,384 MB GDDR6 VRAM, CUDA 12.8), Ubuntu Linux 22.04 LTS, Python 3.13.15, PyTorch 2.11.0 (\texttt{2.11.0+cu128}). Each 50-epoch run completed in approximately 4.36 hours (average 314 seconds/epoch).
+    \item \textbf{Ablation Screening Environment (25-Epoch Runs)}: Cloud compute node equipped with Dual NVIDIA Tesla T4 GPUs running parallel worker dispatchers across GPU 0 and GPU 1.
+    \item \textbf{Local Baseline Environment}: Local workstation equipped with an NVIDIA GeForce RTX 3050 Laptop GPU (6,144 MB GDDR6 VRAM, Driver 572.16), AMD Ryzen 7, Windows 11, PyTorch 2.6.0 with CUDA 12.4 runtime (\texttt{2.6.0+cu124}).
     \item \textbf{Mixed Precision}: Automatic Mixed Precision (AMP FP16) utilizing \texttt{torch.amp.GradScaler('cuda', init\_scale=1024.0)}.
 \end{itemize}
 
 \subsection{Training Optimization, Hyperparameters, and Protocol Delineation}
-We explicitly distinguish between the extended 45-epoch primary model protocol and the controlled 25-epoch ablation screening campaign:
+We explicitly document the hyperparameters and execution protocols for the full model evaluation and ablation screening:
 \begin{itemize}
     \item \textbf{Optimizer}: AdamW with decoupled weight decay ($1 \times 10^{-3}$).
-    \item \textbf{Primary 45-Epoch Model Protocol}:
+    \item \textbf{Full 50-Epoch Multi-Seed Evaluation Protocol}:
     \begin{itemize}
-        \item \textit{Hardware \& Batch Size}: Single RTX 3050 (6GB VRAM), mini-batch size of 8 (6,000 class-balanced pairs/epoch = 750 optimizer updates/epoch).
-        \item \textit{Learning Rates}: Backbone $\eta_{\text{backbone}} = 1 \times 10^{-5}$, task heads $\eta_{\text{head}} = 2 \times 10^{-4}$.
-        \item \textit{Schedule}: 3-epoch linear warmup followed by Cosine Annealing to $\eta_{\min} = 1 \times 10^{-7}$; 45 epoch budget with checkpoint selection at best validation epoch 36.
-        \item \textit{Dataset Split}: Historical unquarantined split (internal Wagner dedup applied; $n_{\text{train}}=4,764$ DFU, $n_{\text{train}}=11,491$ Wagner).
+        \item \textit{Hardware \& Batch Size}: NVIDIA Tesla T4 GPU, batch size of 16 (6,000 class-balanced DFUC pairs interleaved with clean Wagner batches per epoch = 375 optimizer updates/epoch).
+        \item \textit{Learning Rates}: Backbone $\eta_{\text{backbone}} = 2 \times 10^{-5}$, task projection and classifier heads $\eta_{\text{head}} = 4 \times 10^{-4}$ (following linear batch scaling).
+        \item \textit{Learning Rate Schedule}: 3-epoch linear warmup ($0.1 \times \eta \to 1.0 \times \eta$) followed by Cosine Annealing decay to $\eta_{\min} = 1 \times 10^{-7}$ over 50 epochs.
+        \item \textit{Multi-Seed Campaign}: Conducted independently across three predeclared random seeds (Seed 42, Seed 123, and Seed 2026), governing weight initialization, DataLoader shuffling, clinical data augmentations, and Siamese pair generation.
+        \item \textit{Dataset Split Integrity}: Evaluated on the cryptographically verified leak-free quarantined split consumed via \texttt{clean\_leak\_free\_split\_manifest.json} ($n_{\text{train}}=4,626$ DFU, $n_{\text{train}}=11,371$ Wagner), preserving the canonical validation cohort ($n=1,191$ DFUC, $n=303$ Wagner valid, $n=157$ Wagner test) untouched across all seeds via fixed partition seed 42.
+        \item \textit{Pre-Training Assertion Guard}: Mandatory MD5 assertion in \texttt{leakage\_guard.py} verified zero cross-split collisions and zero quarantine violations prior to training initiation.
+        \item \textit{Checkpoint Selection Rule}: Atomic saving of \texttt{best\_checkpoint.pth} governed by the predeclared joint multi-task monitoring metric, selecting peak generalization checkpoints at Epoch 41 (Seed 42), Epoch 44 (Seed 123), and Epoch 46 (Seed 2026).
     \end{itemize}
     \item \textbf{Controlled 25-Epoch Ablation Screening Protocol}:
     \begin{itemize}
-        \item \textit{Hardware \& Batch Size}: Dual NVIDIA T4 GPUs running parallel worker dispatchers, batch size of 16 per GPU (375 optimizer updates/epoch).
-        \item \textit{Scaled Learning Rates}: Linear batch-scaling applied: $\eta_{\text{backbone}} = 2 \times 10^{-5}$, $\eta_{\text{head}} = 4 \times 10^{-4}$.
-        \item \textit{Schedule}: Identical 3-epoch linear warmup and cosine decay over a fixed 25-epoch budget; best checkpoint saved atomically based on predeclared monitor metric.
-        \item \textit{Dataset Split}: Cryptographically verified leak-free quarantined split consumed via \texttt{clean\_leak\_free\_split\_manifest.json} ($n_{\text{train}}=4,626$ DFU, $n_{\text{train}}=11,371$ Wagner) with mandatory pre-training assertion checks in \texttt{leakage\_guard.py}.
+        \item \textit{Configuration}: Parallel Dual-T4 execution across all 8 component variants (A0 Baselines through A7) under matched 25-epoch screening schedules and seed 42 on the clean quarantined split.
     \end{itemize}
-    \item \textbf{Gradient Norm Clipping}: Maximum norm $= 1.0$ across all runs.
-    \item \textbf{Deterministic Controls}: Fixed random seed 42 across Python, NumPy, and PyTorch RNGs.
+    \item \textbf{Gradient Norm Clipping}: Maximum unscaled gradient norm threshold $= 1.0$ across all runs.
 \end{itemize}
 
 \subsection{Data Augmentation Pipeline}
@@ -403,9 +403,9 @@ During training, images are resized to $224 \times 224$ and subjected to a clini
 \section{Results}
 
 \subsection{Pathology Classification Performance}
-Table~\ref{tab:dfuc_comparison} summarizes performance across the DFUC2021 pathology benchmark. To preserve evaluation integrity, the table explicitly delineates published official competition hidden-test-set evaluations from our internal development validation cohort evaluations.
+Table~\ref{tab:dfuc_comparison} summarizes performance across the DFUC2021 pathology benchmark. To preserve scientific integrity, the table explicitly delineates published official competition hidden-test-set evaluations, published independent literature splits, and our internal development validation cohort evaluations.
 
-On the 20\% held-out development validation split ($n = 1,191$), our primary 45-epoch DFU-WAGNER net model achieves a Macro-F1 score of \textbf{0.9201} and an overall accuracy of \textbf{90.18\%}. Most notably, DFU-WAGNER net achieves an F1-score of \textbf{0.9149} on the critical minority class (\textit{Ischaemia}) with a sensitivity of \textbf{93.48\%} (43/46 cases detected). In comparison, the controlled 25-epoch screening model (A1) on the leak-free quarantined split achieved a Macro-F1 of \textbf{0.9102} and accuracy of \textbf{88.83\%}.
+On the 20\% held-out development validation split ($n = 1,191$), the complete 50-epoch DFU-WAGNER net multi-seed campaign (Seeds 42, 123, 2026) trained under the cryptographically verified leak-free quarantined split achieves a mean Macro-F1 score of \textbf{0.9456 $\pm$ 0.0043} and an overall accuracy of \textbf{93.65 $\pm$ 0.38\%} (peaking at \textbf{0.9509} Macro-F1 and \textbf{94.12\%} accuracy for Seed 123). Most significantly, DFU-WAGNER net elevates the critical minority class (\textit{Ischaemia}) to an F1-score of \textbf{0.9338 $\pm$ 0.0090} with a mean sensitivity of \textbf{92.03 $\pm$ 1.02\%} (diagnosing 43 out of 46 true ischaemic presentations in Seed 123 and 42/46 in Seeds 42 and 2026). Furthermore, the complex dual-pathology \textit{Both} category achieves a mean F1-score of \textbf{0.9880 $\pm$ 0.0000} with near-perfect recall (\textbf{99.73 $\pm$ 0.38\%}).
 
 \begin{table*}[t]
 \centering
@@ -423,49 +423,57 @@ Toofanee \textit{et al.} (DFU-SIAM) \cite{toofanee2023dfu} & EfficientNetV2-S + 
 \multicolumn{8}{l}{\textit{Part B: Published Literature on Independent DFUC Splits}} \\
 Karthik \textit{et al.} \cite{karthik2025attention} & Swin + EMA Attention & Independent Split & --- & 89.20 & --- & --- & --- \\
 \midrule
-\multicolumn{8}{l}{\textit{Part C: Internal Stratified Development Validation Split ($n = 1,191$)}} \\
+\multicolumn{8}{l}{\textit{Part C: Internal Stratified Development Validation Split ($n = 1,191$, Clean Leak-Free Quarantined Split)}} \\
 DFU-WAGNER net (A1, 25-Epoch Screening)$^*$ & EfficientNetV2-S + Swin-Tiny & 20\% Val Split & 0.9102 & 88.83 & 0.9015 & 0.9190 & 0.9348 \\
-\textbf{DFU-WAGNER net (45-Epoch Primary)} & \textbf{EfficientNetV2-S + Swin-Tiny} & \textbf{20\% Val Split} & \textbf{0.9201} & \textbf{90.18} & \textbf{0.9134} & \textbf{0.9279} & \textbf{0.9149} \\
+DFU-WAGNER net (50-Epoch, Seed 42) & EfficientNetV2-S + Swin-Tiny & 20\% Val Split & 0.9405 & 93.20 & 0.9409 & 0.9406 & 0.9231 \\
+DFU-WAGNER net (50-Epoch, Seed 123) & EfficientNetV2-S + Swin-Tiny & 20\% Val Split & 0.9509 & 94.12 & 0.9529 & 0.9494 & 0.9451 \\
+DFU-WAGNER net (50-Epoch, Seed 2026) & EfficientNetV2-S + Swin-Tiny & 20\% Val Split & 0.9453 & 93.62 & 0.9480 & 0.9430 & 0.9333 \\
+\midrule
+\textbf{DFU-WAGNER net (50-Epoch Multi-Seed Mean)} & \textbf{EfficientNetV2-S + Swin-Tiny} & \textbf{20\% Val Split} & \textbf{0.9456 $\pm$ 0.0043} & \textbf{93.65 $\pm$ 0.38} & \textbf{0.9472 $\pm$ 0.0049} & \textbf{0.9443 $\pm$ 0.0037} & \textbf{0.9338 $\pm$ 0.0090} \\
 \bottomrule
-\multicolumn{8}{l}{\footnotesize $^*$Note: The 25-epoch A1 screening model was evaluated under the clean leak-free quarantined split protocol (Seed 42).} \\
-\multicolumn{8}{l}{\footnotesize The 45-epoch primary model reflects the extended training schedule under the historical unquarantined split.} \\
+\multicolumn{8}{l}{\footnotesize $^*$Note: The 25-epoch A1 screening model represents the rapid component screening run (Seed 42).} \\
+\multicolumn{8}{l}{\footnotesize Multi-seed 50-epoch results reflect full training convergence on the clean leak-free quarantined split with atomic best-joint checkpoint selection.} \\
 \multicolumn{8}{l}{\footnotesize Note: Direct numerical comparison between Parts A, B, and C is invalid due to differing evaluation partitions and hidden server protocols.} \\
 \end{tabular}
 \end{table*}
 
 \subsection{Per-Class Performance Breakdown}
-Table~\ref{tab:per_class} details per-class precision, recall, and F1-score across all four DFUC2021 categories on the validation cohort ($n = 1,191$). The confusion matrix demonstrates strong sensitivity: out of 46 true ischaemic ulcer instances, 43 were successfully diagnosed (93.48\% sensitivity). Furthermore, the combined \textit{Both} category (concurrent infection and ischaemia) achieved 100.0\% recall (124/124) with an F1-score of \textbf{0.9841}.
+Table~\ref{tab:per_class} details per-class precision, recall, and F1-score across all four DFUC2021 categories on the clean development validation cohort ($n = 1,191$), reporting both multi-seed statistics (Mean $\pm$ Standard Deviation across Seeds 42, 123, 2026) and representative primary seed results. Across all seeds, the architecture demonstrates exceptional sensitivity on the minority \textit{Ischaemia} class (\textbf{92.03 $\pm$ 1.02\%} recall, \textbf{0.9338 $\pm$ 0.0090} F1-score), effectively preventing limbs with underlying peripheral arterial disease from being misclassified as uncomplicated ulcers. Concurrently, the compound \textit{Both} class attains a precision of \textbf{0.9789 $\pm$ 0.0036} and a recall of \textbf{0.9973 $\pm$ 0.0038} (124/124 true instances detected in Seeds 42 and 2026, 123/124 in Seed 123), bounding diagnostic leakage on complex presentations.
 
 \begin{table}[h]
 \centering
-\caption{Detailed Per-Class Pathology Classification Results (DFUC2021 Validation Split, $n=1,191$)}
+\caption{Detailed Per-Class Pathology Classification Results on Clean DFUC2021 Validation Split ($n=1,191$, 50-Epoch Multi-Seed Mean $\pm$ Std)}
 \label{tab:per_class}
 \begin{tabular}{lcccc}
 \toprule
 \textbf{Pathology Class} & \textbf{Support ($n$)} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} \\
 \midrule
-None (Control) & 510 & 0.9104 & 0.8569 & 0.8828 \\
-Infection & 511 & 0.8785 & 0.9198 & 0.8987 \\
-Ischaemia (Minority) & 46 & 0.8958 & 0.9348 & \textbf{0.9149} \\
-Both (Inf + Isch) & 124 & 0.9688 & 1.0000 & \textbf{0.9841} \\
+None (Control) & 510 & 0.9222 $\pm$ 0.0115 & 0.9340 $\pm$ 0.0138 & 0.9279 $\pm$ 0.0041 \\
+Infection & 511 & 0.9400 $\pm$ 0.0125 & 0.9256 $\pm$ 0.0131 & 0.9326 $\pm$ 0.0041 \\
+Ischaemia (Minority) & 46 & 0.9478 $\pm$ 0.0102 & 0.9203 $\pm$ 0.0102 & \textbf{0.9338 $\pm$ 0.0090} \\
+Both (Inf + Isch) & 124 & 0.9789 $\pm$ 0.0036 & 0.9973 $\pm$ 0.0038 & \textbf{0.9880 $\pm$ 0.0000} \\
 \midrule
-\textbf{Macro Average} & \textbf{1,191} & \textbf{0.9134} & \textbf{0.9279} & \textbf{0.9201} \\
+\textbf{Macro Average} & \textbf{1,191} & \textbf{0.9472 $\pm$ 0.0049} & \textbf{0.9443 $\pm$ 0.0037} & \textbf{0.9456 $\pm$ 0.0043} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \subsection{Wagner Depth Ordinal Grading Results}
-Table~\ref{tab:wagner_results} summarizes ordinal depth grading performance across the deduplicated Wagner validation cohort ($n = 303$). DFU-WAGNER net achieves an exact classification accuracy of \textbf{68.65\%} (208/303) and an adjacent-grade accuracy of \textbf{91.42\%} (277/303), bounding Mean Absolute Error to \textbf{0.4290} and attaining a Quadratic Weighted Kappa of \textbf{0.7765}.
+Table~\ref{tab:wagner_results} summarizes ordinal depth grading performance across the clean, leak-free Wagner validation cohort ($n = 303$) over the complete 50-epoch multi-seed training campaign. Across Seeds 42, 123, and 2026, DFU-WAGNER net attains a mean exact classification accuracy of \textbf{67.66 $\pm$ 0.47\%} and an adjacent-grade accuracy of \textbf{91.09 $\pm$ 0.71\%} (reaching \textbf{92.08\%} in Seed 2026), bounding Mean Absolute Error to \textbf{0.4433 $\pm$ 0.0109} grades and achieving an ordinal Quadratic Weighted Kappa of \textbf{0.7621 $\pm$ 0.0124} (peaking at \textbf{0.7750} in Seed 42). Individual per-grade F1-scores confirm consistent biophysical ordering: Grade 0 (intact skin) achieves \textbf{0.9845 $\pm$ 0.0110} F1 (100\% in Seed 42); Grade 1 achieves \textbf{0.7125 $\pm$ 0.0136}; Grade 2 achieves \textbf{0.6384 $\pm$ 0.0150}; Grade 3 achieves \textbf{0.4222 $\pm$ 0.0436}; and Grade 4 (gangrene) achieves \textbf{0.7544 $\pm$ 0.0249} F1.
 
 \begin{table}[h]
 \centering
-\caption{Wagner Depth Ordinal Grading Performance (Validation Split, $n=303$)}
+\caption{Wagner Depth Ordinal Grading Performance on Clean Validation Split ($n=303$, 50-Epoch Multi-Seed Mean $\pm$ Std)}
 \label{tab:wagner_results}
 \begin{tabular}{lcccc}
 \toprule
-\textbf{Evaluation Cohort} & \textbf{Accuracy (\%)} & \textbf{Adj. Acc. (\%)} & \textbf{MAE} & \textbf{QWK} \\
+\textbf{Evaluation Setting / Seed} & \textbf{Accuracy (\%)} & \textbf{Adj. Acc. (\%)} & \textbf{MAE} & \textbf{QWK} \\
 \midrule
-Validation Split ($n=303$) & 68.65 & 91.42 & 0.4290 & 0.7765 \\
+Seed 42 (Peak QWK Checkpoint) & 67.99 & 90.43 & 0.4356 & 0.7750 \\
+Seed 123 & 67.00 & 90.76 & 0.4587 & 0.7455 \\
+Seed 2026 (Peak Adj. Acc Checkpoint) & 67.99 & 92.08 & 0.4356 & 0.7659 \\
+\midrule
+\textbf{Multi-Seed Mean $\pm$ Std} & \textbf{67.66 $\pm$ 0.47} & \textbf{91.09 $\pm$ 0.71} & \textbf{0.4433 $\pm$ 0.0109} & \textbf{0.7621 $\pm$ 0.0124} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -556,7 +564,7 @@ Optimized (B0 + Swin-Tiny) & 35,158,798 & 134.12 MB & $\approx 2,750\text{ MB}$ 
 \subsection{Minority-Class Ischaemia Representation}
 In the DFUC2021 challenge benchmark \cite{cassidy2021diabetic}, detecting arterial ischaemia is a primary diagnostic hurdle because ischaemic wounds represent only 3.81\% of samples. Under standard cross-entropy, frequent categories dominate gradient updates, resulting in reported test F1-scores below 0.4200 \cite{galdran2021convolutional, toofanee2023dfu}. Clinically, unrecognized ischaemic ulceration delays vascular intervention, increasing the risk of major tissue loss \cite{armstrong1998validation}.
 
-DFU-WAGNER net addresses this imbalance through Class-Balanced Focal Loss combined with Hard-Pair Tangent LMCoT Metric Learning on $z_{\text{shared}}$. On the validation cohort, the architecture achieves an \textit{Ischaemia} precision of \textbf{0.8958}, recall of \textbf{0.9348}, and F1-score of \textbf{0.9149}, identifying 43 out of 46 true ischaemic presentations. Concurrently, the compound \textit{Both} category achieves 100\% recall (124/124) with an F1-score of \textbf{0.9841}.
+DFU-WAGNER net addresses this imbalance through Class-Balanced Focal Loss combined with Hard-Pair Tangent LMCoT Metric Learning on $z_{\text{shared}}$. On the clean validation cohort, the complete 50-epoch multi-seed training campaign achieves a mean \textit{Ischaemia} precision of \textbf{0.9478 $\pm$ 0.0102}, recall of \textbf{0.9203 $\pm$ 0.0102}, and F1-score of \textbf{0.9338 $\pm$ 0.0090} (reaching 0.9451 in Seed 123), identifying up to 43 out of 46 true ischaemic presentations. Concurrently, the compound \textit{Both} category achieves near-perfect recall (\textbf{99.73 $\pm$ 0.38\%}) with a consistent F1-score of \textbf{0.9880 $\pm$ 0.0000}.
 
 \subsection{Multi-Task Learning and Honest Pareto Trade-Offs}
 A vital scientific insight from our controlled ablation screening is the presence of authentic multi-task Pareto trade-offs. The full multi-task model does not win every individual evaluation metric, and scientific integrity requires documenting these trade-offs transparently:
@@ -576,7 +584,7 @@ A vital scientific insight from our controlled ablation screening is the presenc
 \end{enumerate}
 
 \subsection{Ordinal Biophysical Geometry Preservation}
-By reformulating Wagner grading through Consistent Rank Logits (CORAL) \cite{cao2020rank}, DFU-WAGNER net respects the monotonic biophysical reality of ulcer invasion. In nominal multi-class formulations \cite{rostami2024deep, zhou2025deep}, a model that predicts Grade 0 for a Grade 4 gangrenous wound incurs the same nominal penalty as predicting Grade 1 for a Grade 0 wound. Under CORAL, four cumulative binary cutoffs enforce monotonic rank ordering. Consequently, our primary model bounds Mean Absolute Error to \textbf{0.4290} and achieves an adjacent-grade accuracy of \textbf{91.42\%} (with a Quadratic Weighted Kappa of \textbf{0.7765}), ensuring that diagnostic discrepancies remain localized to contiguous stages.
+By reformulating Wagner grading through Consistent Rank Logits (CORAL) \cite{cao2020rank}, DFU-WAGNER net respects the monotonic biophysical reality of ulcer invasion. In nominal multi-class formulations \cite{rostami2024deep, zhou2025deep}, a model that predicts Grade 0 for a Grade 4 gangrenous wound incurs the same nominal penalty as predicting Grade 1 for a Grade 0 wound. Under CORAL, four cumulative binary cutoffs enforce monotonic rank ordering. Consequently, our 50-epoch multi-seed models bound Mean Absolute Error to \textbf{0.4433 $\pm$ 0.0109} grades and achieve an adjacent-grade accuracy of \textbf{91.09 $\pm$ 0.71\%} (peaking at 92.08\% with a Quadratic Weighted Kappa of 0.7750), ensuring that diagnostic discrepancies remain strictly localized to contiguous anatomical stages.
 
 % =========================================================================
 % SECTION VIII: LIMITATIONS
@@ -586,7 +594,7 @@ To preserve scientific and clinical integrity, we declare the following limitati
 \begin{enumerate}
     \item \textbf{Absence of Patient Metadata}: Neither DFUC2021 nor the Wagner dataset provides patient identification tags, clinical case numbers, or longitudinal timestamps. While our cryptographic hash deduplication guarantees exact image-level independence, true inter-patient independence across splits cannot be independently verified.
     \item \textbf{Web-Origin Scraping Overlap}: Programmatic hash audit revealed 728 identical image pairs across public DFUC2021 and Wagner releases. While we have provided complete audit manifests and a leak-free split quarantine protocol for future training, researchers evaluating multi-task combinations of these datasets must account for this cross-cohort duplication.
-    \item \textbf{Single-Seed Initialization}: Reported ablation runs were conducted under fixed random seed 42 to establish parameter-for-parameter comparability. Formal multi-seed variance quantification across randomized initializations (e.g., Seeds 123, 2026) remains for extended multi-center evaluations.
+    \item \textbf{Multi-Seed Verification and Domain Variance}: While the primary architecture has now been formally verified across three randomized seeds (Seeds 42, 123, 2026) demonstrating narrow performance variance ($\pm 0.43\%$ Macro-F1, $\pm 0.38\%$ accuracy, $\pm 0.0124$ QWK), prospective validation across geographically distinct hospital systems and camera hardware remains essential prior to clinical adoption.
     \item \textbf{Evaluation Split vs. Hidden Test Set}: The reported 0.9201 Macro-F1 reflects a 20\% development validation split ($n = 1,191$), whereas official DFUC2021 challenge leaderboards reflect an independent hidden test set ($n \approx 5,734$). These numbers are not directly interchangeable.
     \item \textbf{Non-Causal Nature of Explainability}: Grad-CAM visual attribution heatmaps reflect post-hoc gradient sensitivity and must not be interpreted as histological tissue boundaries, segmentation masks, or definitive causal clinical evidence.
     \item \textbf{Clinical Deployment Status}: This work presents a computational research framework and is \textbf{not cleared for autonomous clinical diagnosis or unmonitored patient triage without direct expert podiatric supervision}.
@@ -600,7 +608,7 @@ This paper presented \textbf{DFU-WAGNER net}, a multi-task deep representation l
 
 The three-way \textbf{TaskDisentangler} module partitions features into shared anatomical, pathology-private, and depth-private unit hyperspheres, regularized by a cosine \textbf{Orthogonality Loss} ($\mathcal{L}_{\text{orth}}$). Cross-cohort distribution shifts are minimized via \textbf{Uncertainty-Gated MMD} on the shared subspace, while \textbf{Class-Balanced Focal Loss}, \textbf{Hard-Pair Tangent LMCoT Metric Learning}, and \textbf{CORAL Ordinal Regression} optimize task-specific objectives. 
 
-Evaluated across DFUC2021 and deduplicated Wagner cohorts, DFU-WAGNER net achieves a Macro-F1 of \textbf{0.9201}, overall accuracy of \textbf{90.18\%}, and minority \textit{Ischaemia} F1-score of \textbf{0.9149} (93.48\% sensitivity) on the development validation cohort, alongside an ordinal Wagner QWK of \textbf{0.7765} and adjacent depth accuracy of \textbf{91.42\%}. Systematic ablations confirm that active hard-pair mining and uncertainty-gated domain alignment prevent negative cross-cohort transfer and minority collapse. In addition, an exhaustive cross-dataset cryptographic audit provides the community with open manifests to resolve web-origin duplicate overlap. DFU-WAGNER net establishes an architecturally rigorous, computationally efficient foundation for multi-faceted diabetic wound characterization.
+Evaluated across DFUC2021 and deduplicated Wagner cohorts on the clean leak-free quarantined split, DFU-WAGNER net achieves a mean Macro-F1 of \textbf{0.9456 $\pm$ 0.0043} (peak 0.9509), overall accuracy of \textbf{93.65 $\pm$ 0.38\%} (peak 94.12\%), and minority \textit{Ischaemia} F1-score of \textbf{0.9338 $\pm$ 0.0090} (92.03\% sensitivity) on the development validation cohort, alongside an ordinal Wagner QWK of \textbf{0.7621 $\pm$ 0.0124} (peak 0.7750) and adjacent depth accuracy of \textbf{91.09 $\pm$ 0.71\%} (peak 92.08\%). Systematic ablations confirm that active hard-pair mining and uncertainty-gated domain alignment prevent negative cross-cohort transfer and minority collapse. In addition, an exhaustive cross-dataset cryptographic audit provides the community with open manifests to resolve web-origin duplicate overlap. DFU-WAGNER net establishes an architecturally rigorous, computationally efficient foundation for multi-faceted diabetic wound characterization.
 
 % =========================================================================
 % REFERENCES
